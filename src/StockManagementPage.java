@@ -8,42 +8,47 @@ import java.time.format.DateTimeFormatter;
 
 public class StockManagementPage extends JFrame implements ActionListener {
     JButton stockCountBtn, stockTransferBtn, backBtn;
-    String currentOutletId;
+    String currentOutletId; 
+
+    // Inner class to hold pending transfer items
+    class TransferItem {
+        Model model;
+        int quantity;
+        public TransferItem(Model m, int q) { this.model = m; this.quantity = q; }
+    }
 
     public StockManagementPage() {
-        setTitle("Stock Management System");
-        setSize(400, 300);
+        setTitle("Store Operations - Stock Management");
+        setSize(450, 350); // Slightly larger window
         setLayout(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Determine Outlet ID from current user ID (e.g., C6001 -> C60)
+        // 1. Determine Current Outlet
         if (Session.current_user != null) {
             String empId = Session.current_user.get_employee_id();
-            if (empId.length() >= 3) {
-                currentOutletId = empId.substring(0, 3);
-            } else {
-                currentOutletId = "C60"; // Fallback
-            }
+            currentOutletId = (empId.length() >= 3) ? empId.substring(0, 3) : "C60";
+        } else {
+            currentOutletId = "C60";
         }
 
         JLabel title = new JLabel("Stock Management (" + currentOutletId + ")");
         title.setFont(new Font("Arial", Font.BOLD, 16));
-        title.setBounds(80, 20, 250, 30);
+        title.setBounds(100, 20, 250, 30);
         add(title);
 
         stockCountBtn = new JButton("Stock Count (Morning/Night)");
-        stockCountBtn.setBounds(50, 70, 280, 40);
+        stockCountBtn.setBounds(70, 70, 300, 40);
         stockCountBtn.addActionListener(this);
         add(stockCountBtn);
 
         stockTransferBtn = new JButton("Stock Transfer (In/Out)");
-        stockTransferBtn.setBounds(50, 130, 280, 40);
+        stockTransferBtn.setBounds(70, 130, 300, 40);
         stockTransferBtn.addActionListener(this);
         add(stockTransferBtn);
 
         backBtn = new JButton("Back to Dashboard");
-        backBtn.setBounds(100, 200, 180, 30);
+        backBtn.setBounds(130, 220, 180, 30);
         backBtn.addActionListener(this);
         add(backBtn);
 
@@ -52,168 +57,234 @@ public class StockManagementPage extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == backBtn) {
-            this.dispose();
-            // Assuming Dashboard is already open, if not, new DashboardPage();
-        } 
-        else if (e.getSource() == stockCountBtn) {
-            performStockCount();
-        } 
-        else if (e.getSource() == stockTransferBtn) {
-            performStockTransfer();
-        }
+        if (e.getSource() == backBtn) this.dispose();
+        else if (e.getSource() == stockCountBtn) performStockCount();
+        else if (e.getSource() == stockTransferBtn) performStockTransfer();
     }
 
-    // --- FEATURE 1: STOCK COUNT ---
+    // ==========================================
+    // FEATURE 1: STOCK COUNT (Same as before)
+    // ==========================================
     private void performStockCount() {
         ArrayList<Model> models = StockDataHandler.loadModels();
         int mismatches = 0;
         int tallyCorrect = 0;
 
-        // Simple input loop for each model
         for (Model model : models) {
+            int systemRecord = model.getStockForOutlet(currentOutletId);
             String input = JOptionPane.showInputDialog(this, 
-                "Enter count for model: " + model.getModelName(), 
+                "Model: " + model.getModelName() + "\nSystem Record: " + systemRecord + "\nEnter physical count:", 
                 "Stock Count", JOptionPane.QUESTION_MESSAGE);
             
-            if (input == null) break; // User cancelled
+            if (input == null) break;
 
             try {
                 int counted = Integer.parseInt(input);
-                int record = model.getStockForOutlet(currentOutletId);
-
-                if (counted == record) {
-                    JOptionPane.showMessageDialog(this, "Match! Count: " + counted);
+                if (counted == systemRecord) {
                     tallyCorrect++;
                 } else {
                     JOptionPane.showMessageDialog(this, 
-                        "MISMATCH!\nCounted: " + counted + "\nRecord: " + record, 
-                        "Warning", JOptionPane.WARNING_MESSAGE);
+                        "MISMATCH DETECTED!\nModel: " + model.getModelName() + 
+                        "\nCounted: " + counted + "\nSystem Record: " + systemRecord, 
+                        "Stock Mismatch Warning", JOptionPane.WARNING_MESSAGE);
                     mismatches++;
                 }
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Invalid number entered.");
+                // Ignore invalid input
             }
         }
-        
-        JOptionPane.showMessageDialog(this, 
-            "Stock Count Completed.\nCorrect: " + tallyCorrect + "\nMismatches: " + mismatches);
+        JOptionPane.showMessageDialog(this, "Stock Count Summary:\nCorrect: " + tallyCorrect + "\nMismatches: " + mismatches);
     }
 
-    // --- FEATURE 2: STOCK TRANSFER ---
+    // ==========================================
+    // FEATURE 2: STOCK TRANSFER (Multi-Item)
+    // ==========================================
     private void performStockTransfer() {
-        // Create a custom dialog for transfer details
-        JDialog d = new JDialog(this, "Stock Transfer", true);
-        d.setSize(400, 400);
+        JDialog d = new JDialog(this, "New Stock Transfer", true);
+        d.setSize(500, 600); // Taller window for list
         d.setLayout(null);
         d.setLocationRelativeTo(this);
 
-        JLabel typeLbl = new JLabel("Type:");
-        typeLbl.setBounds(30, 20, 100, 25);
+        // --- Header Controls ---
+        JLabel typeLbl = new JLabel("Transaction Type:");
+        typeLbl.setBounds(30, 20, 120, 25);
         d.add(typeLbl);
 
         String[] types = {"Stock In", "Stock Out"};
         JComboBox<String> typeBox = new JComboBox<>(types);
-        typeBox.setBounds(140, 20, 200, 25);
+        typeBox.setBounds(150, 20, 200, 25);
         d.add(typeBox);
 
-        JLabel outletLbl = new JLabel("Target Outlet:"); // Where is it coming from or going to?
-        outletLbl.setBounds(30, 60, 100, 25);
-        d.add(outletLbl);
+        JLabel fromLbl = new JLabel("From (Source):");
+        fromLbl.setBounds(30, 60, 120, 25);
+        d.add(fromLbl);
+        JComboBox<String> fromBox = new JComboBox<>();
+        fromBox.setBounds(150, 60, 200, 25);
+        d.add(fromBox);
 
-        // Load outlets for dropdown
-        ArrayList<Outlet> outlets = StockDataHandler.loadOutlets();
-        JComboBox<Outlet> outletBox = new JComboBox<>(outlets.toArray(new Outlet[0]));
-        outletBox.setBounds(140, 60, 200, 25);
-        d.add(outletBox);
+        JLabel toLbl = new JLabel("To (Dest):");
+        toLbl.setBounds(30, 100, 120, 25);
+        d.add(toLbl);
+        JComboBox<String> toBox = new JComboBox<>();
+        toBox.setBounds(150, 100, 200, 25);
+        d.add(toBox);
 
-        JLabel modelLbl = new JLabel("Model:");
-        modelLbl.setBounds(30, 100, 100, 25);
+        // Load Data
+        ArrayList<Outlet> allOutlets = StockDataHandler.loadOutlets();
+        allOutlets.add(0, new Outlet("HQ", "Headquarters"));
+        ArrayList<Model> modelList = StockDataHandler.loadModels();
+
+        // Populate Locations Logic
+        ActionListener updateBoxes = e -> {
+            String selectedType = (String) typeBox.getSelectedItem();
+            fromBox.removeAllItems();
+            toBox.removeAllItems();
+
+            if ("Stock In".equals(selectedType)) {
+                // Coming TO me
+                for (Outlet o : allOutlets) {
+                    if (!o.getCode().equals(currentOutletId)) fromBox.addItem(o.getCode());
+                }
+                toBox.addItem(currentOutletId);
+                toBox.setEnabled(false);
+                fromBox.setEnabled(true);
+            } else {
+                // Going FROM me
+                fromBox.addItem(currentOutletId);
+                fromBox.setEnabled(false);
+                for (Outlet o : allOutlets) {
+                    if (!o.getCode().equals(currentOutletId)) toBox.addItem(o.getCode());
+                }
+                toBox.setEnabled(true);
+            }
+        };
+        typeBox.addActionListener(updateBoxes);
+        updateBoxes.actionPerformed(null);
+
+        // --- Item Selection ---
+        JSeparator sep = new JSeparator();
+        sep.setBounds(20, 140, 440, 10);
+        d.add(sep);
+
+        JLabel modelLbl = new JLabel("Add Model:");
+        modelLbl.setBounds(30, 160, 100, 25);
         d.add(modelLbl);
 
-        // Load models for dropdown
-        ArrayList<Model> modelList = StockDataHandler.loadModels();
-        // Create String array for combo box
         String[] modelNames = new String[modelList.size()];
         for(int i=0; i<modelList.size(); i++) modelNames[i] = modelList.get(i).getModelName();
-        
         JComboBox<String> modelBox = new JComboBox<>(modelNames);
-        modelBox.setBounds(140, 100, 200, 25);
+        modelBox.setBounds(110, 160, 180, 25);
         d.add(modelBox);
 
-        JLabel qtyLbl = new JLabel("Quantity:");
-        qtyLbl.setBounds(30, 140, 100, 25);
+        JLabel qtyLbl = new JLabel("Qty:");
+        qtyLbl.setBounds(300, 160, 40, 25);
         d.add(qtyLbl);
 
         JTextField qtyField = new JTextField();
-        qtyField.setBounds(140, 140, 200, 25);
+        qtyField.setBounds(330, 160, 60, 25);
         d.add(qtyField);
 
-        JButton processBtn = new JButton("Process Transfer");
-        processBtn.setBounds(100, 250, 180, 30);
-        d.add(processBtn);
+        JButton addBtn = new JButton("Add to List");
+        addBtn.setBounds(150, 200, 150, 30);
+        d.add(addBtn);
 
-        processBtn.addActionListener(ev -> {
-            String type = (String) typeBox.getSelectedItem();
-            Outlet selectedOutlet = (Outlet) outletBox.getSelectedItem();
-            String selectedModelName = (String) modelBox.getSelectedItem();
-            String qtyText = qtyField.getText();
+        // --- List Display ---
+        JTextArea listArea = new JTextArea();
+        listArea.setEditable(false);
+        JScrollPane scroll = new JScrollPane(listArea);
+        scroll.setBounds(30, 240, 420, 150);
+        scroll.setBorder(BorderFactory.createTitledBorder("Items to Transfer"));
+        d.add(scroll);
 
+        // Transfer Queue
+        ArrayList<TransferItem> transferQueue = new ArrayList<>();
+
+        // Add Button Logic
+        addBtn.addActionListener(ev -> {
+            String mName = (String) modelBox.getSelectedItem();
             try {
-                int qty = Integer.parseInt(qtyText);
-                if (qty <= 0) throw new NumberFormatException();
+                int qty = Integer.parseInt(qtyField.getText());
+                if(qty <= 0) throw new NumberFormatException();
 
-                // Logic:
-                // Stock In: Increases current outlet stock. Comes FROM selectedOutlet.
-                // Stock Out: Decreases current outlet stock. Goes TO selectedOutlet.
-                
-                boolean isStockIn = type.equals("Stock In");
-                
-                // Find and update model
-                for (Model m : modelList) {
-                    if (m.getModelName().equals(selectedModelName)) {
-                        int currentStock = m.getStockForOutlet(currentOutletId);
-                        
-                        if (!isStockIn && currentStock < qty) {
-                            JOptionPane.showMessageDialog(d, "Insufficient stock for transfer!");
-                            return;
-                        }
+                // Find model object
+                Model selectedModel = null;
+                for(Model m : modelList) if(m.getModelName().equals(mName)) selectedModel = m;
 
-                        int newStock = isStockIn ? (currentStock + qty) : (currentStock - qty);
-                        m.setStockForOutlet(currentOutletId, newStock);
-                        
-                        // Save changes to CSV
-                        StockDataHandler.saveModels(modelList);
-                        
-                        // Generate Receipt Text
-                        StringBuilder receipt = new StringBuilder();
-                        receipt.append("=== ").append(type).append(" ===\n");
-                        receipt.append("Date: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("\n");
-                        receipt.append("Time: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:mm a"))).append("\n");
-                        
-                        if (isStockIn) {
-                            receipt.append("From: ").append(selectedOutlet.getCode()).append("\n");
-                            receipt.append("To: ").append(currentOutletId).append(" (Current)\n");
-                        } else {
-                            receipt.append("From: ").append(currentOutletId).append(" (Current)\n");
-                            receipt.append("To: ").append(selectedOutlet.getCode()).append("\n");
-                        }
-                        
-                        receipt.append("Model: ").append(m.getModelName()).append("\n");
-                        receipt.append("Quantity: ").append(qty).append("\n");
-                        receipt.append("Employee: ").append(Session.current_user.get_employee_name()).append("\n");
-                        
-                        StockDataHandler.appendReceipt(receipt.toString());
-                        
-                        JOptionPane.showMessageDialog(d, "Transfer Successful! Receipt generated.");
-                        d.dispose();
-                        break;
-                    }
+                if(selectedModel != null) {
+                    transferQueue.add(new TransferItem(selectedModel, qty));
+                    listArea.append(mName + " (Qty: " + qty + ")\n");
+                    qtyField.setText(""); // Clear input
                 }
-
-            } catch (NumberFormatException ex) {
+            } catch(NumberFormatException ex) {
                 JOptionPane.showMessageDialog(d, "Invalid Quantity");
             }
+        });
+
+        // --- Confirm Button ---
+        JButton confirmBtn = new JButton("Confirm Transfer");
+        confirmBtn.setBounds(150, 410, 180, 40);
+        d.add(confirmBtn);
+
+        confirmBtn.addActionListener(ev -> {
+            if(transferQueue.isEmpty()) {
+                JOptionPane.showMessageDialog(d, "No items in list!");
+                return;
+            }
+
+            String source = (String) fromBox.getSelectedItem();
+            String dest = (String) toBox.getSelectedItem();
+            String type = (String) typeBox.getSelectedItem();
+            int totalQty = 0;
+
+            // 1. Validation Loop
+            for(TransferItem item : transferQueue) {
+                if(!source.equals("HQ")) {
+                    int currentStock = item.model.getStockForOutlet(source);
+                    if(currentStock < item.quantity) {
+                        JOptionPane.showMessageDialog(d, "Insufficient stock for " + item.model.getModelName() + " at " + source);
+                        return; // Stop transaction
+                    }
+                }
+            }
+
+            // 2. Processing Loop
+            for(TransferItem item : transferQueue) {
+                if(!source.equals("HQ")) {
+                    int sStock = item.model.getStockForOutlet(source);
+                    item.model.setStockForOutlet(source, sStock - item.quantity);
+                }
+                if(!dest.equals("HQ")) {
+                    int dStock = item.model.getStockForOutlet(dest);
+                    item.model.setStockForOutlet(dest, dStock + item.quantity);
+                }
+                totalQty += item.quantity;
+            }
+
+            StockDataHandler.saveModels(modelList);
+
+            // 3. Receipt Generation
+            StringBuilder receipt = new StringBuilder();
+            receipt.append("=== ").append(type.toUpperCase()).append(" ===\n");
+            receipt.append("Date: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("\n");
+            receipt.append("Time: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:mm a"))).append("\n");
+            receipt.append("From: ").append(source).append("\n");
+            receipt.append("To:   ").append(dest).append("\n");
+            receipt.append("Models Received:\n");
+            
+            for(TransferItem item : transferQueue) {
+                receipt.append(" - ").append(item.model.getModelName())
+                       .append(" (Quantity: ").append(item.quantity).append(")\n");
+            }
+            
+            receipt.append("Total Quantity: ").append(totalQty).append("\n");
+            if(Session.current_user != null) {
+                receipt.append("Employee: ").append(Session.current_user.get_employee_name()).append("\n");
+            }
+            
+            StockDataHandler.appendReceipt(receipt.toString());
+            
+            JOptionPane.showMessageDialog(d, "Transfer Successful!\nReceipt generated.");
+            d.dispose();
         });
 
         d.setVisible(true);
