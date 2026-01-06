@@ -72,6 +72,7 @@ public class RegisterPage extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        boolean is_invalid_password = false;
         if (e.getSource() == cancel_button) {
             this.dispose(); // Close the current register page window
         } else if (e.getSource() == save_button) {
@@ -95,6 +96,22 @@ public class RegisterPage extends JFrame implements ActionListener{
                     JOptionPane.showMessageDialog(this, "Employee ID " + id + " already exists.");
                     return;
                 }
+            }
+
+            if (password.length() != 6) {
+                JOptionPane.showMessageDialog(this, "Password length must only be 6 characters!");
+                return;
+            }
+            for (int i = 0;i < password.length();i++){
+                if (!Character.isLetterOrDigit(password.charAt(i))) {
+                    is_invalid_password = true;
+                    break;
+                }
+            }
+
+            if (is_invalid_password) {
+                JOptionPane.showMessageDialog(this, "Password should only contain letters and digits!");
+                return;
             }
 
             //if inputted datas/infos are not empty and not already exist in the employee.csv file,i write the new entries to employee.csv
