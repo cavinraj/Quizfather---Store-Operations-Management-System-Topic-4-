@@ -5,6 +5,8 @@ public class DashboardPage extends JFrame implements ActionListener{
 
     private JButton logout_button;
     private JButton register_button;
+    private JButton clock_in_button;
+    private JButton clock_out_button;
     
     DashboardPage(){
         //1.Window Steup
@@ -33,7 +35,7 @@ public class DashboardPage extends JFrame implements ActionListener{
 
         if (Session.current_user.get_role().equalsIgnoreCase("manager")) {
 
-            // we doing this to make sure that register button is only exclusive to manager
+            // doing this to make sure that register button is only exclusive to manager
 
             register_button = new JButton("Register New Employee");
             register_button.setBounds(20, 70, 200, 30); // Below the welcome label
@@ -42,18 +44,29 @@ public class DashboardPage extends JFrame implements ActionListener{
             
         }
 
+        //this upcoming two buttons are for attendance feature which includes clock in button and clock out button
+        clock_in_button = new JButton("Clock In");
+        clock_in_button.setBounds(20, 120, 150, 40); // Big button
+        clock_in_button.addActionListener(this);
+        add(clock_in_button);
+
+        clock_out_button = new JButton("Clock Out");
+        clock_out_button.setBounds(180, 120, 150, 40); // Next to it
+        clock_out_button.addActionListener(this);
+        add(clock_out_button);
+
         setVisible(true);//makes the wundow visible
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == logout_button) {// we check if the source event came from logout_button when clicked
+        if (e.getSource() == logout_button) {// check if the source event came from logout_button when clicked
             
-            // first we check and confirm they want to logout
+            // first check and confirm they want to logout
             int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
             
             if (choice == JOptionPane.YES_OPTION) {
-                // if user put yes then we must clear the session and reset the current user to null because nobody is logged in
+                // if user put yes then must clear the session and reset the current user to null because nobody is logged in
                 Session.current_user = null;
                 
                 // Close this Dashboard window
@@ -63,9 +76,13 @@ public class DashboardPage extends JFrame implements ActionListener{
                 new LoginPage();
             }
         }
-        else if (e.getSource() == register_button) {//we check if the source event came from reigster_button when clicked
-            // if true we open the Registration window
+        else if (e.getSource() == register_button) {//check if the source event came from reigster_button when clicked
+            // if true open the Registration window
             new RegisterPage();
         }
+        else if (e.getSource() == clock_in_button) {
+            new ClockInPage();
+        }
+
     }
 }

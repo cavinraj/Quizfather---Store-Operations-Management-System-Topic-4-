@@ -57,15 +57,23 @@ public class LoginPage extends JFrame implements ActionListener {
             //1.Fetch inputs from user
             String user_id = user_text.getText();
             String password = String.valueOf(pass_text.getPassword());
+            String outlet_id;
 
             //2.Load employees to array from csv using FileReader class that we created.
             String filename = "employee.csv";
-            ArrayList<Employee> employees = FileReader.transfer_data(filename);
+            ArrayList<Employee> employees = FileReader.employee_transfer_data(filename);
             boolean found = false;
+
+            if (user_id.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "The fields must not be empty!");
+                return;
+            }
 
             //3.We search the inputted info from user about user_id and password by looping the array.
             for (Employee employee : employees) {
                 if (employee.get_employee_id().equals(user_id) && employee.get_password().equals(password)) {
+
+                    outlet_id = user_id.substring(0, 3);
 
                     //we found match
                     found = true;
@@ -73,7 +81,7 @@ public class LoginPage extends JFrame implements ActionListener {
                     //we save the matched employee temporarily to Session class as long as the current round of program is running so that we recorded who logged in.
                     Session.current_user = employee;
 
-                    JOptionPane.showMessageDialog(this,"Login Successful!\n Welcome, " + employee.get_employee_name());
+                    JOptionPane.showMessageDialog(this,"Login Successful!\n Welcome, " + employee.get_employee_name() + " (" + (String) outlet_id + ")");
 
                     //close the current login window
                     this.dispose();
