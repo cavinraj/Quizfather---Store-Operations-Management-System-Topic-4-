@@ -1,3 +1,4 @@
+package src;
 import javax.swing.*; // Imports JFrame, JButton, JTextField, etc.
 import java.awt.*;    // Imports Color, Font, etc.
 import java.awt.event.*;
@@ -59,7 +60,7 @@ public class LoginPage extends JFrame implements ActionListener {
             String password = String.valueOf(pass_text.getPassword());
 
             //2.Load employees to array from csv using FileReader class that we created.
-            String filename = "employee.csv";
+            String filename = "data/employee.csv";
             ArrayList<Employee> employees = FileReader.transfer_data(filename);
             boolean found = false;
 

@@ -1,3 +1,4 @@
+package src;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.FileWriter;// to write files
@@ -88,7 +89,7 @@ public class RegisterPage extends JFrame implements ActionListener{
             }
 
             // i check if the inputted user_id is already in the csv file because user_id is unique for each employee but name can be same sometimes.
-            String filename = "employee.csv";
+            String filename = "data/employee.csv";
             ArrayList<Employee> employees = FileReader.transfer_data(filename);
 
             for (Employee employee : employees) {
