@@ -5,8 +5,9 @@ import java.util.Scanner;
 
 public class FileReader {
     static ArrayList<Employee> employees;
+    static ArrayList<Outlet> outlets;
 
-    static ArrayList<Employee> transfer_data(String filename){
+    static ArrayList<Employee> employee_transfer_data(String filename){
         employees = new ArrayList<>();
 
         try (Scanner scanner = new Scanner(new FileInputStream(filename))) {
@@ -28,5 +29,25 @@ public class FileReader {
         }
 
         return employees;
+    }
+
+    static ArrayList<Outlet> outlet_transfer_data(String filename){
+        outlets = new ArrayList<>();
+
+        try (Scanner scanner = new Scanner(new FileInputStream(filename))) {
+            scanner.nextLine(); //This is to eliminate the first line of the csv from being read
+            while (scanner.hasNextLine()) {
+                String current_line = scanner.nextLine();
+                String[] infos = current_line.split(",");
+                String outlet_id = infos[0];
+                String outlet_name = infos[1];
+                Outlet outlet = new Outlet(outlet_id, outlet_name);
+                outlets.add(outlet);
+            }
+        } catch (Exception e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+
+        return outlets;
     }
 }
