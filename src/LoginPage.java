@@ -1,3 +1,4 @@
+package src;
 import javax.swing.*; // Imports JFrame, JButton, JTextField, etc.
 import java.awt.*;    // Imports Color, Font, etc.
 import java.awt.event.*;
