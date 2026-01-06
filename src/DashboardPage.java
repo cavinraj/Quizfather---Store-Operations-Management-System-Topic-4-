@@ -49,12 +49,12 @@ public class DashboardPage extends JFrame implements ActionListener{
 
         //this upcoming two buttons are for attendance feature which includes clock in button and clock out button
         clock_in_button = new JButton("Clock In");
-        clock_in_button.setBounds(20, 120, 150, 40); // Big button
+        clock_in_button.setBounds(20, 180, 150, 40); // Big button
         clock_in_button.addActionListener(this);
         add(clock_in_button);
 
         clock_out_button = new JButton("Clock Out");
-        clock_out_button.setBounds(180, 120, 150, 40); // Next to it
+        clock_out_button.setBounds(180, 180, 150, 40); // Next to it
         clock_out_button.addActionListener(this);
         add(clock_out_button);
 
