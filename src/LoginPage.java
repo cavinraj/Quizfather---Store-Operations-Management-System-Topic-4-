@@ -63,8 +63,8 @@ public class LoginPage extends JFrame implements ActionListener {
             //2.Load employees to array from csv using FileReader class that we created.
             String employee_filename = "data/employee.csv";
             String outlet_filename = "data/outlet.csv";
-            ArrayList<Employee> employees = FileReader.employee_transfer_data(employee_filename);
-            ArrayList<Outlet> outlets = FileReader.outlet_transfer_data(outlet_filename);
+            ArrayList<Object> employees = FileReader.transfer_data(employee_filename);
+            ArrayList<Object> outlets = FileReader.transfer_data(outlet_filename);
             boolean found = false;
 
             if (user_id.isEmpty() || password.isEmpty()) {
@@ -73,9 +73,9 @@ public class LoginPage extends JFrame implements ActionListener {
             }
 
             //3.We search the inputted info from user about user_id and password by looping the array.
-            for (Employee employee : employees) {
-                for (Outlet outlet : outlets) {
-                    if (employee.get_employee_id().equals(user_id) && employee.get_password().equals(password)) {
+            for (Object employee : employees) {
+                for (Object outlet : outlets) {
+                    if (((Employee) employee).get_employee_id().equals(user_id) && ((Employee) employee).get_password().equals(password)) {
 
                         outlet_id = user_id.substring(0, 3);
 
@@ -83,10 +83,10 @@ public class LoginPage extends JFrame implements ActionListener {
                         found = true;
 
                         //we save the matched employee temporarily to Session class as long as the current round of program is running so that we recorded who logged in.
-                        Session.current_user = employee;
-                        Session.user_current_outlet = outlet;
+                        Session.current_user = (Employee) employee;
+                        Session.user_current_outlet = (Outlet) outlet;
 
-                        JOptionPane.showMessageDialog(this,"Login Successful!\n Welcome, " + employee.get_employee_name() + " (" + outlet.getCode() + ")");
+                        JOptionPane.showMessageDialog(this,"Login Successful!\n Welcome, " + ((Employee) employee).get_employee_name() + " (" + ((Outlet) outlet).getCode() + ")");
 
                         //close the current login window
                         this.dispose();
