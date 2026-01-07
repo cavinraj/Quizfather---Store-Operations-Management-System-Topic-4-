@@ -94,7 +94,7 @@ public class DashboardPage extends JFrame implements ActionListener{
             new ClockInPage();
         }
         else if (e.getSource() == clock_out_button) {
-            
+            new ClockOutPage();
         }
         // --- NEW: BUTTON LOGIC ---
         else if (e.getSource() == stock_button) {
