@@ -32,29 +32,35 @@ public class DashboardPage extends JFrame implements ActionListener{
         logout_button.addActionListener(this);
         add(logout_button);
 
-        // --- NEW: STOCK MANAGEMENT BUTTON ---
-        // Accessible by everyone (Manager and Full/Part time according to PDF instructions on page 5/6)
-        stock_button = new JButton("Stock Management");
-        stock_button.setBounds(20, 70, 200, 30);
-        stock_button.addActionListener(this);
-        add(stock_button);
-        // ------------------------------------
+        int y_position = 70;
+        int gap_between_buttons = 50;
 
         if (Session.current_user.get_role().equalsIgnoreCase("manager")) {
             register_button = new JButton("Register New Employee");
-            register_button.setBounds(20, 120, 200, 30); // Moved down to y=120 to make space
+            register_button.setBounds(20, y_position, 200, 30); // Moved down to y=120 to make space
             register_button.addActionListener(this);
             add(register_button);
+
+            y_position += gap_between_buttons; 
         }
+
+        // --- NEW: STOCK MANAGEMENT BUTTON ---
+        // Accessible by everyone (Manager and Full/Part time according to PDF instructions on page 5/6)
+        stock_button = new JButton("Stock Management");
+        stock_button.setBounds(20, y_position, 200, 30);
+        stock_button.addActionListener(this);
+        add(stock_button);
+        
+        y_position += gap_between_buttons;
 
         //this upcoming two buttons are for attendance feature which includes clock in button and clock out button
         clock_in_button = new JButton("Clock In");
-        clock_in_button.setBounds(20, 180, 150, 40); // Big button
+        clock_in_button.setBounds(20, y_position, 150, 40); // Big button
         clock_in_button.addActionListener(this);
         add(clock_in_button);
 
         clock_out_button = new JButton("Clock Out");
-        clock_out_button.setBounds(180, 180, 150, 40); // Next to it
+        clock_out_button.setBounds(180, y_position, 150, 40); // Next to it
         clock_out_button.addActionListener(this);
         add(clock_out_button);
 
@@ -86,6 +92,9 @@ public class DashboardPage extends JFrame implements ActionListener{
         }
         else if (e.getSource() == clock_in_button) {
             new ClockInPage();
+        }
+        else if (e.getSource() == clock_out_button) {
+            
         }
         // --- NEW: BUTTON LOGIC ---
         else if (e.getSource() == stock_button) {

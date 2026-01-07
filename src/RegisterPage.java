@@ -90,13 +90,18 @@ public class RegisterPage extends JFrame implements ActionListener{
 
             // i check if the inputted user_id is already in the csv file because user_id is unique for each employee but name can be same sometimes.
             String filename = "data/employee.csv";
-            ArrayList<Employee> employees = FileReader.employee_transfer_data(filename);
+            ArrayList<Object> employees = FileReader.transfer_data(filename);
 
-            for (Employee employee : employees) {
-                if (employee.get_employee_id().equals(id)) {
+            for (Object employee : employees) {
+                if (((Employee) employee).get_employee_id().equals(id)) {
                     JOptionPane.showMessageDialog(this, "Employee ID " + id + " already exists.");
                     return;
                 }
+            }
+
+            if (id.length() != 5) {
+                JOptionPane.showMessageDialog(this, "User ID needs to be 5 characters only!");
+                return;
             }
 
             if (password.length() != 6) {
