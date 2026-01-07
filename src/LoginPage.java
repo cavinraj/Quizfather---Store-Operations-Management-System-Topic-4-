@@ -10,6 +10,7 @@ public class LoginPage extends JFrame implements ActionListener {
     private JTextField user_text;
     private JPasswordField pass_text; // Hides the password with dots
     private JButton login_button;
+    private JButton password_reset_button; // not required in our guidelines but im just doing for fun and to test my capabilities and logical thinking
 
     public LoginPage(){
         //First Phase - The Window
@@ -46,6 +47,11 @@ public class LoginPage extends JFrame implements ActionListener {
         login_button.addActionListener(this);//Notify the current this class and connect the button to the code that must run when we use actionPerfromed() func
         add(login_button);
 
+        password_reset_button = new JButton("Forgot Password");
+        password_reset_button.setBounds(300, 233, 170, 25);// This forgot password button is set to be at bottom right by coordinates.
+        password_reset_button.addActionListener(this);
+        add(password_reset_button);
+
         setLocationRelativeTo(null); // Centers the window on your screen (according to java vscode documentation)
         setVisible(true);// makes the login page window visible
 
@@ -55,52 +61,57 @@ public class LoginPage extends JFrame implements ActionListener {
     @Override
         public void actionPerformed(ActionEvent e){
 
-            //1.Fetch inputs from user
-            String user_id = user_text.getText();
-            String password = String.valueOf(pass_text.getPassword());
-            String outlet_id;
+            if (e.getSource() == login_button){
+                //1.Fetch inputs from user
+                String user_id = user_text.getText();
+                String password = String.valueOf(pass_text.getPassword());
+                String outlet_id;
 
-            //2.Load employees to array from csv using FileReader class that we created.
-            String employee_filename = "data/employee.csv";
-            String outlet_filename = "data/outlet.csv";
-            ArrayList<Object> employees = FileReader.transfer_data(employee_filename);
-            ArrayList<Object> outlets = FileReader.transfer_data(outlet_filename);
-            boolean found = false;
+                //2.Load employees to array from csv using FileReader class that we created.
+                String employee_filename = "data/employee.csv";
+                String outlet_filename = "data/outlet.csv";
+                ArrayList<Object> employees = FileReader.transfer_data(employee_filename);
+                ArrayList<Object> outlets = FileReader.transfer_data(outlet_filename);
+                boolean found = false;
 
-            if (user_id.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "The fields must not be empty!");
-                return;
-            }
+                if (user_id.isEmpty() || password.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "The fields must not be empty!");
+                    return;
+                }
 
-            //3.We search the inputted info from user about user_id and password by looping the array.
-            for (Object employee : employees) {
-                for (Object outlet : outlets) {
-                    if (((Employee) employee).get_employee_id().equals(user_id) && ((Employee) employee).get_password().equals(password)) {
+                //3.We search the inputted info from user about user_id and password by looping the array.
+                for (Object employee : employees) {
+                    for (Object outlet : outlets) {
+                        if (((Employee) employee).get_employee_id().equals(user_id) && ((Employee) employee).get_password().equals(password)) {
 
-                        outlet_id = user_id.substring(0, 3);
+                            outlet_id = user_id.substring(0, 3);
 
-                        //we found match
-                        found = true;
+                            //we found match
+                            found = true;
 
-                        //we save the matched employee temporarily to Session class as long as the current round of program is running so that we recorded who logged in.
-                        Session.current_user = (Employee) employee;
-                        Session.user_current_outlet = (Outlet) outlet;
+                            //we save the matched employee temporarily to Session class as long as the current round of program is running so that we recorded who logged in.
+                            Session.current_user = (Employee) employee;
+                            Session.user_current_outlet = (Outlet) outlet;
 
-                        JOptionPane.showMessageDialog(this,"Login Successful!\n Welcome, " + ((Employee) employee).get_employee_name() + " (" + ((Outlet) outlet).getCode() + ")");
+                            JOptionPane.showMessageDialog(this,"Login Successful!\n Welcome, " + ((Employee) employee).get_employee_name() + " (" + ((Outlet) outlet).getCode() + ")");
 
-                        //close the current login window
-                        this.dispose();
+                            //close the current login window
+                            this.dispose();
 
-                        //when a user logs in,the window switched to Dashboard window
-                        new DashboardPage();
+                            //when a user logs in,the window switched to Dashboard window
+                            new DashboardPage();
 
-                        break;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (!found) {
-                JOptionPane.showMessageDialog(this,"Login Failed: Invalid User ID or Password.");
+                if (!found) {
+                    JOptionPane.showMessageDialog(this,"Login Failed: Invalid User ID or Password.");
+                }
+            }
+            if (e.getSource() == password_reset_button) {
+                new UserIDConfirmationPage();
             }
         }
 }

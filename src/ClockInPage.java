@@ -51,7 +51,7 @@ public class ClockInPage extends JFrame{
                         String outlet = infos[4];
                         String status = infos[5];
                         if (user_id.equals(id) && date.equals(date_string) && outlet.equals(outlet_name) && status.equals("IN")) {
-                            JOptionPane.showMessageDialog(this, "You have already clocked in today!","Action blocked",JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(this, "You have already clocked in today!","WARNING : CLOCK IN NOT ALLOWED",JOptionPane.WARNING_MESSAGE);
                             scanner.close();
                             return;// stop everything
                         }
