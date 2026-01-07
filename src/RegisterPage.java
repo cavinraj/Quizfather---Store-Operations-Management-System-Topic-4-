@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.io.FileWriter;// to write files
 import java.io.PrintWriter;//to write files
-import java.io.IOException;//for try catch error handling
 import java.util.ArrayList;
 
 public class RegisterPage extends JFrame implements ActionListener{

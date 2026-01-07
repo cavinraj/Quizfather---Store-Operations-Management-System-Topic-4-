@@ -38,8 +38,7 @@ public class ClockOutPage extends JFrame{
         DateTimeFormatter time_formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         String time_string = now.format(time_formatter);
 
-        try {
-            Scanner scanner = new Scanner(new File (filename));
+        try (Scanner scanner = new Scanner(new File (filename))){
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] infos = line.split(",");
@@ -61,20 +60,24 @@ public class ClockOutPage extends JFrame{
                 }
             }
 
-            double hours_worked = 0.0;
+            int hours_worked = 0;
+            int minutes_worked = 0;
             if (clock_in_time != null) {
                 long minutes = Duration.between(clock_in_time, now).toMinutes();
-                hours_worked = minutes/60;
+                hours_worked = (int) (minutes/60);
+                minutes_worked = (int) (minutes%60);
             }
             else {
                 JOptionPane.showMessageDialog(this,"You have not clocked in today!","Warning: No 'Clock In' record found for today.",JOptionPane.WARNING_MESSAGE);
+                return;
             }
 
 
             PrintWriter printWriter = new PrintWriter(new FileWriter(filename, true));
             printWriter.println(id + "," + name + "," + date_string + "," + time_string + "," + outlet_name + ",OUT");
             printWriter.close();
-            JOptionPane.showMessageDialog(this, "Clock Out Successful!\nTotal Hours Worked: " + String.format("%.1f", hours_worked));
+            JOptionPane.showMessageDialog(this, "Clock Out Successful!\nTotal Work Duration: " + String.format("%d Hour(s) %d Minute(s)", hours_worked,minutes_worked));
+            this.dispose();
         } catch (Exception e) {
             e.printStackTrace();
         }
