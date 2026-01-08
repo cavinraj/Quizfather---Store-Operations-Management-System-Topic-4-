@@ -37,6 +37,10 @@ public class UserIDConfirmationPage extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e){
+        handle_USER_ID_Confirmation();
+    }
+
+    private void handle_USER_ID_Confirmation(){
         boolean found = false;
         String user_id = user_id_text.getText();
         if (user_id.isEmpty()) {
