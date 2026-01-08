@@ -72,54 +72,11 @@ public class RegisterPage extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean is_invalid_password = false;
-        if (e.getSource() == cancel_button) {
-            this.dispose(); // Close the current register page window
-        } else if (e.getSource() == save_button) {
-            String name = name_field.getText().trim();
-            String id = id_field.getText().trim();
-            String password = password_field.getText().trim();
-            String role = (String) role_box.getSelectedItem();// this returns the current selected item from the role_box field.
+        handle_register_employee_page(e);
+    }
 
-            // now i check if the infos are null because i dont want to send empty datas or entries into the csv file
-            if (name.isEmpty() || id.isEmpty() || password.isEmpty()) {//i use OR because even if one of it is true send warning that "Please fill in all the details !"
-                JOptionPane.showMessageDialog(this, "Please fill in all the details !");
-                return;
-            }
-
-            // i check if the inputted user_id is already in the csv file because user_id is unique for each employee but name can be same sometimes.
-            String filename = "data/employee.csv";
-            ArrayList<Object> employees = FileReader.transfer_data(filename);
-
-            for (Object employee : employees) {
-                if (((Employee) employee).get_employee_id().equals(id)) {
-                    JOptionPane.showMessageDialog(this, "Employee ID " + id + " already exists.");
-                    return;
-                }
-            }
-
-            if (id.length() != 5) {
-                JOptionPane.showMessageDialog(this, "User ID needs to be 5 characters only!");
-                return;
-            }
-
-            if (password.length() != 6) {
-                JOptionPane.showMessageDialog(this, "Password length must only be 6 characters!");
-                return;
-            }
-            for (int i = 0;i < password.length();i++){
-                if (!Character.isLetterOrDigit(password.charAt(i))) {
-                    is_invalid_password = true;
-                    break;
-                }
-            }
-
-            if (is_invalid_password) {
-                JOptionPane.showMessageDialog(this, "Password should only contain letters and digits!");
-                return;
-            }
-
-            //if inputted datas/infos are not empty and not already exist in the employee.csv file,i write the new entries to employee.csv
+    private void write_employee_file(String filename,String name,String id,String password,String role){
+        //if inputted datas/infos are not empty and not already exist in the employee.csv file,i write the new entries to employee.csv
             try {
                 //append = true because i want to update from the last line of the csv file so that we dont mess up the original data in csv file.
                 PrintWriter pw = new PrintWriter(new FileWriter(filename, true));
@@ -136,6 +93,63 @@ public class RegisterPage extends JFrame implements ActionListener{
 
             } catch (Exception exception) {//we use exception name because e is already used for ActionEvent we cant use again
                 JOptionPane.showMessageDialog(this, "Error saving to file: " + exception.getMessage());
+            }
+    }
+
+    private boolean is_valid_password(String filename,String name,String id,String password,String role){
+        boolean is_invalid_password = false;
+        // i check if the inputted user_id is already in the csv file because user_id is unique for each employee but name can be same sometimes.
+        ArrayList<Object> employees = FileReader.transfer_data(filename);
+
+        for (Object employee : employees) {
+            if (((Employee) employee).get_employee_id().equals(id)) {
+                JOptionPane.showMessageDialog(this, "Employee ID " + id + " already exists.");
+                is_invalid_password = true;
+                return is_invalid_password;
+            }
+        }
+
+        if (id.length() != 5) {
+            JOptionPane.showMessageDialog(this, "User ID needs to be 5 characters only!");
+            is_invalid_password = true;
+            return is_invalid_password;
+        }
+
+        if (password.length() != 6) {
+            JOptionPane.showMessageDialog(this, "Password length must only be 6 characters!");
+            is_invalid_password = true;
+            return is_invalid_password;
+        }
+        for (int i = 0;i < password.length();i++){
+            if (!Character.isLetterOrDigit(password.charAt(i))) {
+                JOptionPane.showMessageDialog(this, "Password should only contain letters and digits!");
+                is_invalid_password = true;
+                return is_invalid_password;
+            }
+        }
+
+        return is_invalid_password;
+    }
+
+    private void handle_register_employee_page(ActionEvent e){
+        if (e.getSource() == cancel_button) {
+            this.dispose(); // Close the current register page window
+        } else if (e.getSource() == save_button) {
+            String filename = "data/employee.csv";
+            String name = name_field.getText().trim();
+            String id = id_field.getText().trim();
+            String password = password_field.getText().trim();
+            String role = (String) role_box.getSelectedItem();// this returns the current selected item from the role_box field.
+
+            // now i check if the infos are null because i dont want to send empty datas or entries into the csv file
+            if (name.isEmpty() || id.isEmpty() || password.isEmpty()) {//i use OR because even if one of it is true send warning that "Please fill in all the details !"
+                JOptionPane.showMessageDialog(this, "Please fill in all the details !");
+                return;
+            }
+
+            boolean is_invalid_password = is_valid_password(filename, name, id, password, role);
+            if (!is_invalid_password) {
+                write_employee_file(filename, name, id, password, role);
             }
         }
     }
