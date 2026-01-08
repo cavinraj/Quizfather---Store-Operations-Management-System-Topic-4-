@@ -11,7 +11,7 @@ public class TestDrive {
             System.out.printf("ID: %s | Name: %s | Role: %s | Password: %s\n",((Employee) employee).get_employee_id(),((Employee) employee).get_employee_name(),((Employee) employee).get_role(),((Employee) employee).get_password());
             System.out.println("-----------------------------------------------------");
         }*/
-
+        AppData.init(); // Load all data
         new LoginPage();
     }
 

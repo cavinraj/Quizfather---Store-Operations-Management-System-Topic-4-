@@ -6,16 +6,20 @@ public class DashboardPage extends JFrame implements ActionListener{
 
     private JButton logout_button;
     private JButton register_button;
-    private JButton stock_button; // NEW BUTTON
+    private JButton stock_button; 
     private JButton clock_in_button;
     private JButton clock_out_button;
     private JButton analytics_button;
     private JButton sales_entry_button;
+    private JButton sales_button;
+    private JButton history_button;
+    private JButton search_info_button; // button for stock search page
+    private JButton edit_info_button; // button for stock edit page
     
     DashboardPage(){
         // ... (Your existing window setup code) ...
         setTitle("Store Operations Management System -- Dashboard (Main Menu)");
-        setSize(500,400);
+        setSize(500,700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -46,13 +50,25 @@ public class DashboardPage extends JFrame implements ActionListener{
             y_position += gap_between_buttons; 
         }
 
-        // --- NEW: STOCK MANAGEMENT BUTTON ---
-        // Accessible by everyone (Manager and Full/Part time according to PDF instructions on page 5/6)
         stock_button = new JButton("Stock Management");
         stock_button.setBounds(20, y_position, 200, 30);
         stock_button.addActionListener(this);
         add(stock_button);
         
+        y_position += gap_between_buttons;
+
+        sales_button = new JButton("Record New Sale");
+        sales_button.setBounds(20, 120, 200, 30);
+        sales_button.addActionListener(this);
+        add(sales_button);
+
+        y_position += gap_between_buttons;
+
+        history_button = new JButton("Sales History & Filter");
+        history_button.setBounds(20, 170, 200, 30);
+        history_button.addActionListener(this);
+        add(history_button);
+
         y_position += gap_between_buttons;
 
         // ===== ADDED (Data Analytics Button) =====
@@ -63,20 +79,34 @@ public class DashboardPage extends JFrame implements ActionListener{
         
         y_position += gap_between_buttons;
         // ========================================
-
         
-        // ===== ADDED: SALES ENTRY BUTTON =====
+        // ===== SALES ENTRY BUTTON =====
         sales_entry_button = new JButton("Enter Sales");
         sales_entry_button.setBounds(20, y_position, 200, 30);
         sales_entry_button.addActionListener(this);
         add(sales_entry_button);
 
         y_position += gap_between_buttons;
-        // ===================================
+
+        // ===== SEARCH INFO BUTTON =====
+        search_info_button = new JButton("Search Stock");
+        search_info_button.setBounds(20, y_position, 200, 30);
+        search_info_button.addActionListener(this);
+        add(search_info_button);
+
+        y_position += gap_between_buttons;
+
+        // ===== EDIT INFO BUTTON =====
+        edit_info_button = new JButton("Edit Stock");
+        edit_info_button.setBounds(20, y_position, 200, 30);
+        edit_info_button.addActionListener(this);
+        add(edit_info_button);
+
+        y_position += gap_between_buttons;
 
         //this upcoming two buttons are for attendance feature which includes clock in button and clock out button
         clock_in_button = new JButton("Clock In");
-        clock_in_button.setBounds(20, y_position, 150, 40); // Big button
+        clock_in_button.setBounds(20, y_position, 150, 40);
         clock_in_button.addActionListener(this);
         add(clock_in_button);
 
@@ -89,7 +119,7 @@ public class DashboardPage extends JFrame implements ActionListener{
         setVisible(true);
     }
 
-    @Override
+
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == logout_button) {// check if the source event came from logout_button when clicked
 
@@ -128,6 +158,17 @@ public class DashboardPage extends JFrame implements ActionListener{
         // ===== ADDED (Sales Entry Logic) =====
         else if (e.getSource() == sales_entry_button) {
             DataAnalytics.enterSales(new java.util.Scanner(System.in));
+        } else if (e.getSource() == sales_button) {
+            new SalesPage();
+        }
+         else if (e.getSource() == history_button) {
+            new SalesHistoryPage();
+        }
+        else if (e.getSource() == search_info_button) {
+            new StockSearchPage();
+        }
+        else if (e.getSource() == edit_info_button) {
+            new StockEditPage();
         }
     }
 }

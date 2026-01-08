@@ -19,7 +19,7 @@ public class StockManagementPage extends JFrame implements ActionListener {
 
     public StockManagementPage() {
         setTitle("Store Operations - Stock Management");
-        setSize(450, 350); // Slightly larger window
+        setSize(450, 350);
         setLayout(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -55,16 +55,14 @@ public class StockManagementPage extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == backBtn) this.dispose();
         else if (e.getSource() == stockCountBtn) performStockCount();
         else if (e.getSource() == stockTransferBtn) performStockTransfer();
     }
 
-    // ==========================================
-    // FEATURE 1: STOCK COUNT (Same as before)
-    // ==========================================
+
+    // STOCK COUNT (Same as before)
     private void performStockCount() {
         ArrayList<Model> models = StockDataHandler.loadModels();
         int mismatches = 0;
@@ -90,15 +88,13 @@ public class StockManagementPage extends JFrame implements ActionListener {
                     mismatches++;
                 }
             } catch (NumberFormatException ex) {
-                // Ignore invalid input
+                
             }
         }
         JOptionPane.showMessageDialog(this, "Stock Count Summary:\nCorrect: " + tallyCorrect + "\nMismatches: " + mismatches);
     }
 
-    // ==========================================
-    // FEATURE 2: STOCK TRANSFER (Multi-Item)
-    // ==========================================
+    // STOCK TRANSFER (Multi-Item)
     private void performStockTransfer() {
         JDialog d = new JDialog(this, "New Stock Transfer", true);
         d.setSize(500, 600); // Taller window for list
