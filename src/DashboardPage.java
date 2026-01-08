@@ -166,12 +166,15 @@ public class DashboardPage extends JFrame implements ActionListener{
         }
         // ===== ADDED (Data Analytics Logic) =====
         else if (e.getSource() == analytics_button) {
-            DataAnalytics.runAnalytics();
+    String result = DataAnalytics.runAnalytics();
+    JOptionPane.showMessageDialog(
+        this,
+        result,
+        "Data Analytics",
+        JOptionPane.INFORMATION_MESSAGE
+    );
         }
-        // ===== ADDED (Sales Entry Logic) =====
-        else if (e.getSource() == sales_entry_button) {
-            DataAnalytics.enterSales(new java.util.Scanner(System.in));
-        } else if (e.getSource() == sales_button) {
+        else if (e.getSource() == sales_button) {
             new SalesPage();
         }
          else if (e.getSource() == history_button) {
