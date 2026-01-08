@@ -13,11 +13,13 @@ public class DashboardPage extends JFrame implements ActionListener{
     private JButton sales_entry_button;
     private JButton sales_button;
     private JButton history_button;
+    private JButton search_info_button; // button for stock search page
+    private JButton edit_info_button; // button for stock edit page
     
     DashboardPage(){
         // ... (Your existing window setup code) ...
         setTitle("Store Operations Management System -- Dashboard (Main Menu)");
-        setSize(500,400);
+        setSize(500,700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -48,7 +50,6 @@ public class DashboardPage extends JFrame implements ActionListener{
             y_position += gap_between_buttons; 
         }
 
-
         stock_button = new JButton("Stock Management");
         stock_button.setBounds(20, y_position, 200, 30);
         stock_button.addActionListener(this);
@@ -78,7 +79,6 @@ public class DashboardPage extends JFrame implements ActionListener{
         
         y_position += gap_between_buttons;
         // ========================================
-
         
         // ===== SALES ENTRY BUTTON =====
         sales_entry_button = new JButton("Enter Sales");
@@ -87,7 +87,22 @@ public class DashboardPage extends JFrame implements ActionListener{
         add(sales_entry_button);
 
         y_position += gap_between_buttons;
-    
+
+        // ===== SEARCH INFO BUTTON =====
+        search_info_button = new JButton("Search Stock");
+        search_info_button.setBounds(20, y_position, 200, 30);
+        search_info_button.addActionListener(this);
+        add(search_info_button);
+
+        y_position += gap_between_buttons;
+
+        // ===== EDIT INFO BUTTON =====
+        edit_info_button = new JButton("Edit Stock");
+        edit_info_button.setBounds(20, y_position, 200, 30);
+        edit_info_button.addActionListener(this);
+        add(edit_info_button);
+
+        y_position += gap_between_buttons;
 
         //this upcoming two buttons are for attendance feature which includes clock in button and clock out button
         clock_in_button = new JButton("Clock In");
@@ -148,6 +163,12 @@ public class DashboardPage extends JFrame implements ActionListener{
         }
          else if (e.getSource() == history_button) {
             new SalesHistoryPage();
+        }
+        else if (e.getSource() == search_info_button) {
+            new StockSearchPage();
+        }
+        else if (e.getSource() == edit_info_button) {
+            new StockEditPage();
         }
     }
 }

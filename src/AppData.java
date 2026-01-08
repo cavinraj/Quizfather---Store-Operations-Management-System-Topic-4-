@@ -8,8 +8,8 @@ public class AppData {
 
     // Load data ONCE when system starts
     public static void init() {
-        employees = DataLoader.loadEmployees("employee.csv");
-        outlets   = DataLoader.loadOutlets("outlet.csv");
-        models    = DataLoader.loadModels("model.csv");
+        employees = DataLoader.loadEmployees("data/employee.csv");
+        outlets   = DataLoader.loadOutlets("data/outlet.csv");
+        models    = DataLoader.loadModels("data/model.csv");
     }
 }
