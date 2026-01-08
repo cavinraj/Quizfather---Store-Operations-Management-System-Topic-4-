@@ -9,6 +9,8 @@ public class DashboardPage extends JFrame implements ActionListener{
     private JButton stock_button; // NEW BUTTON
     private JButton clock_in_button;
     private JButton clock_out_button;
+    private JButton analytics_button;
+    private JButton sales_entry_button;
     
     DashboardPage(){
         // ... (Your existing window setup code) ...
@@ -52,6 +54,25 @@ public class DashboardPage extends JFrame implements ActionListener{
         add(stock_button);
         
         y_position += gap_between_buttons;
+
+        // ===== ADDED (Data Analytics Button) =====
+        analytics_button = new JButton("Data Analytics");
+        analytics_button.setBounds(20, y_position, 200, 30);
+        analytics_button.addActionListener(this);
+        add(analytics_button);
+        
+        y_position += gap_between_buttons;
+        // ========================================
+
+        
+        // ===== ADDED: SALES ENTRY BUTTON =====
+        sales_entry_button = new JButton("Enter Sales");
+        sales_entry_button.setBounds(20, y_position, 200, 30);
+        sales_entry_button.addActionListener(this);
+        add(sales_entry_button);
+
+        y_position += gap_between_buttons;
+        // ===================================
 
         //this upcoming two buttons are for attendance feature which includes clock in button and clock out button
         clock_in_button = new JButton("Clock In");
@@ -100,6 +121,13 @@ public class DashboardPage extends JFrame implements ActionListener{
         else if (e.getSource() == stock_button) {
             new StockManagementPage();
         }
-        // -------------------------
+        // ===== ADDED (Data Analytics Logic) =====
+        else if (e.getSource() == analytics_button) {
+            DataAnalytics.runAnalytics();
+        }
+        // ===== ADDED (Sales Entry Logic) =====
+        else if (e.getSource() == sales_entry_button) {
+            DataAnalytics.enterSales(new java.util.Scanner(System.in));
+        }
     }
 }
