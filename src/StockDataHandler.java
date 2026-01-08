@@ -64,9 +64,6 @@ public class StockDataHandler {
     public static void saveModels(ArrayList<Model> models) {
         // We need the header list to write columns in correct order. 
         // We'll fetch outlet codes from the first model or reload outlets.
-        // For simplicity, let's assuming specific outlet columns based on your provided file.
-        // A robust way is to re-read the header or store it statically. 
-        // Here we will use a fixed list based on your csv: C60-C69.
         String[] outletOrder = {"C60","C61","C62","C63","C64","C65","C66","C67","C68","C69"};
 
         try (PrintWriter pw = new PrintWriter(new FileWriter(MODEL_FILE))) {

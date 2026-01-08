@@ -1,0 +1,11 @@
+=== STOCK IN ===
+Date: 2026-01-07
+Time: 11:54 PM
+From: HQ
+To:   C60
+Models Received:
+ - DW2300-1 (Quantity: 1)
+Total Quantity: 1
+Employee: Adam bin Abu
+
+--------------------------------------------------
