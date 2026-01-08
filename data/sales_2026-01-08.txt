@@ -1,0 +1,13 @@
+=== SALES RECEIPT ===
+Date: 2026-01-08
+Time: 10:18 PM
+Customer: Budi
+Employee: C6004
+---------------------------------
+Model           Qty   Price     
+DW2300-1        1     RM399.00
+---------------------------------
+Total: RM399.00
+Payment: Cash
+=================================
+
