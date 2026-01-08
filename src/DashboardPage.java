@@ -121,21 +121,28 @@ public class DashboardPage extends JFrame implements ActionListener{
 
 
     public void actionPerformed(ActionEvent e) {
+        handle_dashboard_page(e);
+    }
+
+    private void handle_logout_button(){
+        // first check and confirm they want to logout
+        int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            // if user put yes then must clear the session and reset the current user to null because nobody is logged in
+            Session.current_user = null;
+
+            // Close this Dashboard window
+            this.dispose();
+
+            // but important note based on requirements we must invoke the Login Page again after a user logs out.
+            new LoginPage();
+        }
+    }
+
+    private void handle_dashboard_page(ActionEvent e){
         if (e.getSource() == logout_button) {// check if the source event came from logout_button when clicked
-
-            // first check and confirm they want to logout
-            int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
-
-            if (choice == JOptionPane.YES_OPTION) {
-                // if user put yes then must clear the session and reset the current user to null because nobody is logged in
-                Session.current_user = null;
-
-                // Close this Dashboard window
-                this.dispose();
-
-                // but important note based on requirements we must invoke the Login Page again after a user logs out.
-                new LoginPage();
-            }
+            handle_logout_button();
         }
         else if (e.getSource() == register_button) {//check if the source event came from reigster_button when clicked
             // if true open the Registration window
