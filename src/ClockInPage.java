@@ -35,6 +35,10 @@ public class ClockInPage extends JFrame{
         DateTimeFormatter time_formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         String time_string = now.format(time_formatter);
 
+        handle_clock_in(id,name,date_string,time_string,outlet_code,outlet_name);
+    }
+
+    private void handle_clock_in(String id,String name,String date_string,String time_string,String outlet_code,String outlet_name){
         try {
             String filename = "data/attendance.csv";
             File file = new File(filename);

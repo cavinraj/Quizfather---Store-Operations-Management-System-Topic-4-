@@ -19,15 +19,18 @@ public class ClockOutPage extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(null);
 
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
         String id = Session.current_user.get_employee_id();// get the current employee id;
         String name = Session.current_user.get_employee_name();// get the current employee name;
         String outlet_code = Session.user_current_outlet.getCode();
         String outlet_name = Session.user_current_outlet.getName();
         String filename = "data/attendance.csv";
 
-        LocalTime clock_in_time = null;// initialize to null because will assign the clock_in_time to it by reading the attendance
+        handle_clock_out(filename, id, name,outlet_name);
+    }
+
+    private void handle_clock_out(String filename,String id,String name,String outlet_name){
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
 
         // By default Java DateTime gives year first then month and then day so must format it.
         // This tells Java: "I want Day first, then Month, then Year"
@@ -37,6 +40,8 @@ public class ClockOutPage extends JFrame{
         // Format time to look like "09:00:00"
         DateTimeFormatter time_formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         String time_string = now.format(time_formatter);
+
+        LocalTime clock_in_time = null;// initialize to null because will assign the clock_in_time to it by reading the attendance
 
         try (Scanner scanner = new Scanner(new File (filename))){
             while (scanner.hasNextLine()) {
