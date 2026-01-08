@@ -31,7 +31,7 @@ public class SalesHistoryPage extends JFrame {
         title.setBounds(20, 10, 200, 30);
         add(title);
 
-        // Filters [cite: 238]
+        // Filters
         JLabel startLbl = new JLabel("Start Date (YYYY-MM-DD):");
         startLbl.setBounds(20, 50, 160, 25);
         add(startLbl);
@@ -46,7 +46,7 @@ public class SalesHistoryPage extends JFrame {
         endDateField.setBounds(460, 50, 100, 25);
         add(endDateField);
 
-        // Sort Options [cite: 240]
+        // Sort Options
         JLabel sortLbl = new JLabel("Sort By:");
         sortLbl.setBounds(580, 50, 60, 25);
         add(sortLbl);
@@ -67,7 +67,7 @@ public class SalesHistoryPage extends JFrame {
         scroll.setBounds(20, 140, 750, 250);
         add(scroll);
 
-        // Summary [cite: 239]
+        // Summary
         totalSalesLabel = new JLabel("Total Cumulative Sales: RM 0.00");
         totalSalesLabel.setFont(new Font("Arial", Font.BOLD, 14));
         totalSalesLabel.setBounds(20, 410, 400, 30);
@@ -87,7 +87,7 @@ public class SalesHistoryPage extends JFrame {
         String endStr = endDateField.getText().trim();
         ArrayList<Sale> filteredList = new ArrayList<>(allSales);
 
-        // 1. Filter by Date [cite: 238]
+        // Filter by Date
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
             if (!startStr.isEmpty()) {
@@ -107,7 +107,7 @@ public class SalesHistoryPage extends JFrame {
             return;
         }
 
-        // 2. Sort [cite: 240]
+        // Sort
         String sortType = (String) sortBox.getSelectedItem();
         switch (sortType) {
             case "Date (Newest)":

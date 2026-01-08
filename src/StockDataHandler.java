@@ -7,7 +7,7 @@ public class StockDataHandler {
     private static final String MODEL_FILE = "data/model.csv";
     private static final String OUTLET_FILE = "data/outlet.csv";
 
-    // --- OUTLET OPERATIONS ---
+    // OUTLET OPERATIONS
     public static ArrayList<Outlet> loadOutlets() {
         ArrayList<Outlet> outlets = new ArrayList<>();
         try (Scanner scanner = new Scanner(new FileInputStream(OUTLET_FILE))) {
@@ -25,7 +25,7 @@ public class StockDataHandler {
         return outlets;
     }
 
-    // --- MODEL/STOCK OPERATIONS ---
+    // MODEL/STOCK OPERATIONS
     // Reads model.csv and maps columns dynamically to outlets
     public static ArrayList<Model> loadModels() {
         ArrayList<Model> models = new ArrayList<>();
@@ -86,7 +86,7 @@ public class StockDataHandler {
         }
     }
 
-    // --- RECEIPT GENERATION ---
+    // RECEIPT GENERATION
     public static void appendReceipt(String content) {
         String filename = "data/receipts_" + LocalDate.now() + ".txt";
         try (FileWriter fw = new FileWriter(filename, true);

@@ -4,7 +4,7 @@ import java.util.*;
 
 public class DataAnalytics {
 
-    static final String FILE = "sales.txt";
+    static final String FILE = "data/sales.txt";
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
