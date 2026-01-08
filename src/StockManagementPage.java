@@ -157,7 +157,7 @@ public class StockManagementPage extends JFrame implements ActionListener {
         typeBox.addActionListener(updateBoxes);
         updateBoxes.actionPerformed(null);
 
-        // --- Item Selection ---
+        // Item Selection
         JSeparator sep = new JSeparator();
         sep.setBounds(20, 140, 440, 10);
         d.add(sep);
@@ -184,7 +184,7 @@ public class StockManagementPage extends JFrame implements ActionListener {
         addBtn.setBounds(150, 200, 150, 30);
         d.add(addBtn);
 
-        // --- List Display ---
+        // List Display
         JTextArea listArea = new JTextArea();
         listArea.setEditable(false);
         JScrollPane scroll = new JScrollPane(listArea);
@@ -216,7 +216,7 @@ public class StockManagementPage extends JFrame implements ActionListener {
             }
         });
 
-        // --- Confirm Button ---
+        // Confirm Button
         JButton confirmBtn = new JButton("Confirm Transfer");
         confirmBtn.setBounds(150, 410, 180, 40);
         d.add(confirmBtn);
@@ -232,7 +232,7 @@ public class StockManagementPage extends JFrame implements ActionListener {
             String type = (String) typeBox.getSelectedItem();
             int totalQty = 0;
 
-            // 1. Validation Loop
+            // Validation Loop
             for(TransferItem item : transferQueue) {
                 if(!source.equals("HQ")) {
                     int currentStock = item.model.getStockForOutlet(source);
@@ -243,7 +243,7 @@ public class StockManagementPage extends JFrame implements ActionListener {
                 }
             }
 
-            // 2. Processing Loop
+            // Processing Loop
             for(TransferItem item : transferQueue) {
                 if(!source.equals("HQ")) {
                     int sStock = item.model.getStockForOutlet(source);
@@ -258,7 +258,7 @@ public class StockManagementPage extends JFrame implements ActionListener {
 
             StockDataHandler.saveModels(modelList);
 
-            // 3. Receipt Generation
+            // Receipt Generation
             StringBuilder receipt = new StringBuilder();
             receipt.append("=== ").append(type.toUpperCase()).append(" ===\n");
             receipt.append("Date: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("\n");

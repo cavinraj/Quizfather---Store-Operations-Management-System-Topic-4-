@@ -11,7 +11,7 @@ public class SalesDataHandler {
     // Save a sale record to CSV
     public static void saveSale(Sale sale) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(SALES_FILE, true))) {
-            // CSV Format: Date,Customer,Employee,PaymentMethod,Total,Item1|Item2|Item3
+            //format = Date,Customer,Employee,PaymentMethod,Total,Item1|Item2|Item3
             StringBuilder sb = new StringBuilder();
             sb.append(sale.getDateTime().format(DATES_FORMAT)).append(",");
             sb.append(sale.getCustomerName()).append(",");
@@ -19,7 +19,7 @@ public class SalesDataHandler {
             sb.append(sale.getPaymentMethod()).append(",");
             sb.append(sale.getTotalAmount()).append(",");
             
-            // Serialize items with a separator (e.g., pipe '|')
+            // serialize items with a separator
             for (int i = 0; i < sale.getItems().size(); i++) {
                 sb.append(sale.getItems().get(i).toString());
                 if (i < sale.getItems().size() - 1) sb.append("|");
@@ -30,7 +30,7 @@ public class SalesDataHandler {
         }
     }
 
-    // Load all sales for History/Filtering
+    // load all sales for History/Filtering
     public static ArrayList<Sale> loadSales() {
         ArrayList<Sale> sales = new ArrayList<>();
         File file = new File(SALES_FILE);
@@ -60,7 +60,7 @@ public class SalesDataHandler {
         return sales;
     }
 
-    // Generate Text Receipt [cite: 129, 130]
+    // Generate Text Receipt
     public static void generateReceipt(Sale sale) {
         String dateStr = sale.getDateTime().toLocalDate().toString();
         String filename = "data/sales_" + dateStr + ".txt";
@@ -72,7 +72,7 @@ public class SalesDataHandler {
             pw.println("Date: " + sale.getDateTime().toLocalDate());
             pw.println("Time: " + sale.getDateTime().toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
             pw.println("Customer: " + sale.getCustomerName());
-            pw.println("Employee: " + sale.getEmployeeId()); // In real app, could fetch Name using ID
+            pw.println("Employee: " + sale.getEmployeeId());
             pw.println("---------------------------------");
             pw.println(String.format("%-15s %-5s %-10s", "Model", "Qty", "Price"));
             for (SaleItem item : sale.getItems()) {

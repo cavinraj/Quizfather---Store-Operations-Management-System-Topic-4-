@@ -25,18 +25,16 @@ public class SalesPage extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Determine Outlet ID
+        // determine Outlet ID
         if (Session.current_user != null) {
             String empId = Session.current_user.get_employee_id();
             currentOutletId = (empId.length() >= 3) ? empId.substring(0, 3) : "C60";
-            // Initialize Sale Object
+            // initialize Sale object
             currentSale = new Sale(LocalDateTime.now(), "", empId, "");
         } else {
             currentOutletId = "C60";
             currentSale = new Sale(LocalDateTime.now(), "", "Guest", "");
         }
-
-        // --- UI COMPONENTS ---
 
         // Customer Details
         JLabel custLbl = new JLabel("Customer Name:");
@@ -46,7 +44,7 @@ public class SalesPage extends JFrame implements ActionListener {
         customerField.setBounds(140, 20, 200, 25);
         add(customerField);
 
-        // Payment Method [cite: 128]
+        // Payment Method
         JLabel payLbl = new JLabel("Payment Method:");
         payLbl.setBounds(30, 50, 120, 25);
         add(payLbl);
@@ -191,7 +189,7 @@ public class SalesPage extends JFrame implements ActionListener {
         Sale finalSale = new Sale(LocalDateTime.now(), customer, Session.current_user.get_employee_id(), (String)paymentBox.getSelectedItem());
         for(SaleItem item : currentSale.getItems()) finalSale.addItem(item); // Copy items
 
-        // 1. Update Stock in Memory & CSV [cite: 129]
+        // Update Stock in Memory & CSV
         for (SaleItem item : finalSale.getItems()) {
             for (Model m : availableModels) {
                 if (m.getModelName().equals(item.getModelName())) {
@@ -202,10 +200,10 @@ public class SalesPage extends JFrame implements ActionListener {
         }
         StockDataHandler.saveModels(availableModels);
 
-        // 2. Save Sale Record [cite: 129]
+        // Save Sale Record
         SalesDataHandler.saveSale(finalSale);
 
-        // 3. Generate Receipt [cite: 130]
+        // Generate Receipt
         SalesDataHandler.generateReceipt(finalSale);
 
         JOptionPane.showMessageDialog(this, "Sale Recorded Successfully!\nReceipt generated.");

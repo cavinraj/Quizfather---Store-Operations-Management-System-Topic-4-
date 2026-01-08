@@ -18,7 +18,7 @@ public class DashboardPage extends JFrame implements ActionListener{
     
     DashboardPage(){
         // ... (Your existing window setup code) ...
-        setTitle("Store Operations Management System -- Dashboard (Main Menu)");
+        setTitle("Store Operations Management System - Dashboard (Main Menu)");
         setSize(500,700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
@@ -28,6 +28,12 @@ public class DashboardPage extends JFrame implements ActionListener{
         if (Session.current_user != null) {
             name = Session.current_user.get_employee_name();
         }
+
+        JLabel dashboard_label = new JLabel(" GoldenHour Dashboard ");
+        dashboard_label.setBounds(20, 500, 500, 30);
+        dashboard_label.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
+        add(dashboard_label);
+
         JLabel welcome_label = new JLabel("Welcome, " + name);
         welcome_label.setBounds(20, 20, 300, 30);
         welcome_label.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
