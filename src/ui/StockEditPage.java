@@ -1,8 +1,14 @@
-package src;
+package src.ui;
 
 import javax.swing.*;
+
+import src.model.Model;
+import src.utils.Session;
+import src.utils.StockDataHandler;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class StockEditPage extends JFrame implements ActionListener {
     // UI components for interaction and display
@@ -67,11 +73,12 @@ public class StockEditPage extends JFrame implements ActionListener {
     }
 
     private void handleSearch() {
+        ArrayList<Model> modelList = StockDataHandler.loadModels();
         String name = modelSearchField.getText().trim();
         foundModel = null;
 
         // Implement searching algorithm as a prerequisite
-        for (Model m : AppData.models) {
+        for (Model m : modelList) {
             if (m.getModelName().equalsIgnoreCase(name)) {
                 foundModel = m;
                 break;

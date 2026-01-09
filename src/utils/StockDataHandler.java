@@ -1,6 +1,10 @@
-package src;
+package src.utils;
 import java.io.*;
 import java.util.*;
+
+import src.model.Model;
+import src.model.Outlet;
+
 import java.time.LocalDate;
 
 public class StockDataHandler {

@@ -1,5 +1,11 @@
-package src;
+package src.ui;
 import javax.swing.*; // Imports JFrame, JButton, JTextField, etc.
+
+import src.model.Employee;
+import src.model.Outlet;
+import src.utils.FileReader;
+import src.utils.Session;
+
 import java.awt.*;    // Imports Color, Font, etc.
 import java.awt.event.*;
 import java.util.ArrayList;

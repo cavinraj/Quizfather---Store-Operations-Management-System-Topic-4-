@@ -1,6 +1,14 @@
-package src;
+package src.ui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import src.model.Model;
+import src.model.Sale;
+import src.model.SaleItem;
+import src.utils.SalesDataHandler;
+import src.utils.Session;
+import src.utils.StockDataHandler;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDateTime;
@@ -130,7 +138,7 @@ public class SalesPage extends JFrame implements ActionListener {
             int qty = Integer.parseInt(qtyText);
             if (qty <= 0) throw new NumberFormatException();
 
-            // Find Model and Check Stock [cite: 149]
+            // Find Model and Check Stock
             Model selectedModel = null;
             for (Model m : availableModels) {
                 if (m.getModelName().equals(selectedModelName)) {

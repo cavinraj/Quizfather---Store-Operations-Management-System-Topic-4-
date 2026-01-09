@@ -1,6 +1,10 @@
-package src;
+package src.ui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import src.model.Sale;
+import src.utils.SalesDataHandler;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;

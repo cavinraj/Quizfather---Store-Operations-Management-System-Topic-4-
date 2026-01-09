@@ -1,11 +1,10 @@
-package src;
+package src.model;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Model {
     private String modelName;
     private double price;
-    // Maps Outlet ID (e.g., "C60") to stock quantity (e.g., 5)
     private Map<String, Integer> stockByOutlet;
 
     public Model(String modelName, double price) {

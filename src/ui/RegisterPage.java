@@ -1,5 +1,9 @@
-package src;
+package src.ui;
 import javax.swing.*;
+
+import src.model.Employee;
+import src.utils.FileReader;
+
 import java.awt.event.*;
 import java.io.FileWriter;// to write files
 import java.io.PrintWriter;//to write files

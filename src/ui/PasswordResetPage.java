@@ -1,4 +1,4 @@
-package src;
+package src.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +11,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+
+import src.model.Employee;
+import src.utils.FileReader;
+import src.utils.Session;
 
 public class PasswordResetPage extends JFrame implements ActionListener{
 

@@ -1,7 +1,10 @@
-package src;
+package src.utils;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import src.model.Employee;
+import src.model.Outlet;
 
 public class FileReader {
     static ArrayList<Object> employees;
@@ -51,7 +54,7 @@ public class FileReader {
         return outlets;
     }*/
 
-    static ArrayList<Object> transfer_data(String filename){
+    public static ArrayList<Object> transfer_data(String filename){
         if (filename.equalsIgnoreCase("data/employee.csv")) {
             employees = new ArrayList<>();
 

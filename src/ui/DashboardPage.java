@@ -1,5 +1,9 @@
-package src;
+package src.ui;
 import javax.swing.*;
+
+import src.utils.DataAnalytics;
+import src.utils.Session;
+
 import java.awt.event.*;
 
 public class DashboardPage extends JFrame implements ActionListener{
@@ -10,7 +14,6 @@ public class DashboardPage extends JFrame implements ActionListener{
     private JButton clock_in_button;
     private JButton clock_out_button;
     private JButton analytics_button;
-    private JButton sales_entry_button;
     private JButton sales_button;
     private JButton history_button;
     private JButton search_info_button; // button for stock search page
@@ -19,7 +22,7 @@ public class DashboardPage extends JFrame implements ActionListener{
     DashboardPage(){
         // ... (Your existing window setup code) ...
         setTitle("Store Operations Management System - Dashboard (Main Menu)");
-        setSize(500,700);
+        setSize(500,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -28,11 +31,6 @@ public class DashboardPage extends JFrame implements ActionListener{
         if (Session.current_user != null) {
             name = Session.current_user.get_employee_name();
         }
-
-        JLabel dashboard_label = new JLabel(" GoldenHour Dashboard ");
-        dashboard_label.setBounds(20, 500, 500, 30);
-        dashboard_label.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
-        add(dashboard_label);
 
         JLabel welcome_label = new JLabel("Welcome, " + name);
         welcome_label.setBounds(20, 20, 300, 30);
@@ -85,14 +83,6 @@ public class DashboardPage extends JFrame implements ActionListener{
         
         y_position += gap_between_buttons;
         // ========================================
-        
-        // ===== SALES ENTRY BUTTON =====
-        sales_entry_button = new JButton("Enter Sales");
-        sales_entry_button.setBounds(20, y_position, 200, 30);
-        sales_entry_button.addActionListener(this);
-        add(sales_entry_button);
-
-        y_position += gap_between_buttons;
 
         // ===== SEARCH INFO BUTTON =====
         search_info_button = new JButton("Search Stock");
@@ -160,7 +150,6 @@ public class DashboardPage extends JFrame implements ActionListener{
         else if (e.getSource() == clock_out_button) {
             new ClockOutPage();
         }
-        // --- NEW: BUTTON LOGIC ---
         else if (e.getSource() == stock_button) {
             new StockManagementPage();
         }
