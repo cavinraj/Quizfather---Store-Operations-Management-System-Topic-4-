@@ -1,4 +1,4 @@
-package src;
+package src.ui;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import src.utils.Session;
 
 public class ClockInPage extends JFrame{
     

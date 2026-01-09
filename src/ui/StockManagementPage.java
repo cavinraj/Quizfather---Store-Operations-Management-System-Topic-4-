@@ -1,5 +1,11 @@
-package src;
+package src.ui;
 import javax.swing.*;
+
+import src.model.Model;
+import src.model.Outlet;
+import src.utils.Session;
+import src.utils.StockDataHandler;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;

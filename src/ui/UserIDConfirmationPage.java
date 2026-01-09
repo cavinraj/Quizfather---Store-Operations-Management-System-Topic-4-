@@ -1,10 +1,14 @@
-package src;
+package src.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
+
+import src.model.Employee;
+import src.utils.FileReader;
+import src.utils.Session;
 
 public class UserIDConfirmationPage extends JFrame implements ActionListener{
 

@@ -1,8 +1,14 @@
-package src;
+package src.ui;
 
 import javax.swing.*;
+
+import src.model.Model;
+import src.model.Outlet;
+import src.utils.StockDataHandler;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class StockSearchPage extends JFrame implements ActionListener {
@@ -56,7 +62,10 @@ public class StockSearchPage extends JFrame implements ActionListener {
         }
     }
 
+
     private void performSearch() {
+        ArrayList<Model> modelList = StockDataHandler.loadModels();
+        ArrayList<Outlet> allOutlets = StockDataHandler.loadOutlets();
         String query = searchField.getText().trim();
         if (query.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a model name.");
@@ -67,7 +76,7 @@ public class StockSearchPage extends JFrame implements ActionListener {
         boolean found = false;
 
         // search through models
-        for (Model m : AppData.models) {
+        for (Model m : modelList) {
             if (m.getModelName().equalsIgnoreCase(query)) {
                 found = true;
                 resultArea.append("Model: " + m.getModelName() + "\n");
@@ -77,7 +86,7 @@ public class StockSearchPage extends JFrame implements ActionListener {
 
                 // retrieve stock info
                 Map<String, Integer> stockMap = m.getStockMap();
-                for (Outlet outlet : AppData.outlets) {
+                for (Outlet outlet : allOutlets) {
                     int qty = stockMap.getOrDefault(outlet.getCode(), 0);
                     resultArea.append(String.format("%-15s: %d\n", outlet.getName(), qty));
                 }

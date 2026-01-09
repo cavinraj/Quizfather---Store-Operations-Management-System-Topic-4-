@@ -1,6 +1,10 @@
-package src;
+package src.utils;
 import java.io.*;
 import java.util.*;
+
+import src.model.Sale;
+import src.model.SaleItem;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

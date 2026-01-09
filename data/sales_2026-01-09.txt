@@ -1,0 +1,14 @@
+=== SALES RECEIPT ===
+Date: 2026-01-09
+Time: 04:19 PM
+Customer: Mahdei
+Employee: C6002
+---------------------------------
+Model           Qty   Price     
+DW2300-2        1     RM399.00
+DW2300-1        1     RM399.00
+---------------------------------
+Total: RM798.00
+Payment: Debit Card
+=================================
+

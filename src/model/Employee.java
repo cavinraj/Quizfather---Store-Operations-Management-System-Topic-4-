@@ -1,4 +1,4 @@
-package src;
+package src.model;
 public class Employee{
     //this class is the blueprint of every employee from the CSV file
 
