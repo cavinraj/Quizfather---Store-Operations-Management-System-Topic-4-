@@ -53,15 +53,19 @@ public class PasswordResetPage extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e){
+        handle_password_reset_page(e);
+    }
+
+    private void handle_password_reset_page(ActionEvent e){
         String first_password_text = String.valueOf(enter_password_text.getPassword());
         String second_password_text = String.valueOf(confirm_password_text.getPassword());
         String user_id = "";
         String filename = "data/employee.csv";
 
-        handle_reset_password(filename, first_password_text, second_password_text, user_id);
+        reset_password(filename, first_password_text, second_password_text, user_id);
     }
 
-    private void handle_reset_password(String filename,String first_password_text,String second_password_text,String user_id){
+    private void reset_password(String filename,String first_password_text,String second_password_text,String user_id){
         if (first_password_text.isEmpty() || second_password_text.isEmpty()) {
             JOptionPane.showMessageDialog(this, "New Password must not be empty!");
             return;
