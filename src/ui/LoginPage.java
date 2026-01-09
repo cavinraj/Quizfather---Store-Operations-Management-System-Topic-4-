@@ -65,59 +65,77 @@ public class LoginPage extends JFrame implements ActionListener {
     }
 
     @Override
-        public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e){
+        handle_login_page(e);
+    }
 
-            if (e.getSource() == login_button){
-                //1.Fetch inputs from user
-                String user_id = user_text.getText();
-                String password = String.valueOf(pass_text.getPassword());
-                String outlet_id;
+    private void handle_login_page(ActionEvent e){
+        if (e.getSource() == login_button){
+            handle_login_button(e);
+        }
+        if (e.getSource() == password_reset_button) {
+            handle_password_reset_button(e);
+        }
+    }
 
-                //2.Load employees to array from csv using FileReader class that we created.
-                String employee_filename = "data/employee.csv";
-                String outlet_filename = "data/outlet.csv";
-                ArrayList<Object> employees = FileReader.transfer_data(employee_filename);
-                ArrayList<Object> outlets = FileReader.transfer_data(outlet_filename);
-                boolean found = false;
+    private void handle_login_button(ActionEvent e){
+        //1.Fetch inputs from user
+        String user_id = user_text.getText();
+        String password = String.valueOf(pass_text.getPassword());
+        String outlet_id = "";
 
-                if (user_id.isEmpty() || password.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "The fields must not be empty!");
-                    return;
+        //2.Load employees to array from csv using FileReader class that we created.
+        String employee_filename = "data/employee.csv";
+        String outlet_filename = "data/outlet.csv";
+        ArrayList<Object> employees = FileReader.transfer_data(employee_filename);
+        ArrayList<Object> outlets = FileReader.transfer_data(outlet_filename);
+        boolean found = false;
+
+        if (user_id.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "The fields must not be empty!");
+            return;
+        }
+
+        //3.We search the inputted info from user about user_id and password by looping the array.
+        for (Object employee : employees) {
+            for (Object outlet : outlets) {
+                if (is_match_credentials(employee, user_id, password)) {
+
+                    //we found match
+                    found = true;
+                    handle_login_logic(employee, outlet, user_id,outlet_id);
+
+                    break;
                 }
-
-                //3.We search the inputted info from user about user_id and password by looping the array.
-                for (Object employee : employees) {
-                    for (Object outlet : outlets) {
-                        if (((Employee) employee).get_employee_id().equals(user_id) && ((Employee) employee).get_password().equals(password)) {
-
-                            outlet_id = user_id.substring(0, 3);
-
-                            //we found match
-                            found = true;
-
-                            //we save the matched employee temporarily to Session class as long as the current round of program is running so that we recorded who logged in.
-                            Session.current_user = (Employee) employee;
-                            Session.user_current_outlet = (Outlet) outlet;
-
-                            JOptionPane.showMessageDialog(this,"Login Successful!\n Welcome, " + ((Employee) employee).get_employee_name() + " (" + ((Outlet) outlet).getCode() + ")");
-
-                            //close the current login window
-                            this.dispose();
-
-                            //when a user logs in,the window switched to Dashboard window
-                            new DashboardPage();
-
-                            break;
-                        }
-                    }
-                }
-
-                if (!found) {
-                    JOptionPane.showMessageDialog(this,"Login Failed: Invalid User ID or Password.");
-                }
-            }
-            if (e.getSource() == password_reset_button) {
-                new UserIDConfirmationPage();
             }
         }
+
+        if (!found) {
+            JOptionPane.showMessageDialog(this,"Login Failed: Invalid User ID or Password.");
+        }
+    }
+
+    private boolean is_match_credentials(Object employee,String user_id,String password){
+        return ((Employee) employee).get_employee_id().equals(user_id) && ((Employee) employee).get_password().equals(password);
+    }
+
+    private void handle_login_logic(Object employee,Object outlet,String user_id,String outlet_id){
+        outlet_id = user_id.substring(0, 3);
+
+        //we save the matched employee temporarily to Session class as long as the current round of program is running so that we recorded who logged in.
+        Session.current_user = (Employee) employee;
+        Session.user_current_outlet = (Outlet) outlet;
+
+        JOptionPane.showMessageDialog(this,"Login Successful!\n Welcome, " + ((Employee) employee).get_employee_name() + " (" + ((Outlet) outlet).getCode() + ")");
+
+        //close the current login window
+        this.dispose();
+
+        //when a user logs in,the window switched to Dashboard window
+        new DashboardPage();
+    }
+
+    private void handle_password_reset_button(ActionEvent e){
+        new UserIDConfirmationPage();
+    }
 }
