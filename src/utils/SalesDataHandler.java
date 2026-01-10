@@ -63,6 +63,31 @@ public class SalesDataHandler {
         }
         return sales;
     }
+    
+public static void saveAllSales(ArrayList<Sale> sales) {
+    try (PrintWriter pw = new PrintWriter(new FileWriter(SALES_FILE, false))) {
+        for (Sale sale : sales) {
+            StringBuilder sb = new StringBuilder();
+            
+            sb.append(sale.getDateTime().format(DATES_FORMAT)).append(",");
+            sb.append(sale.getCustomerName()).append(",");
+            sb.append(sale.getEmployeeId()).append(",");
+            sb.append(sale.getPaymentMethod()).append(",");
+            sb.append(sale.getTotalAmount()).append(",");
+            
+            for (int i = 0; i < sale.getItems().size(); i++) {
+                sb.append(sale.getItems().get(i).toString());
+                if (i < sale.getItems().size() - 1) {
+                    sb.append("|");
+                }
+            }
+            
+            pw.println(sb.toString());
+        }
+    } catch (IOException e) {
+        System.out.println("Critical Error: Could not update sales storage. " + e.getMessage());
+    }
+}
 
     // Generate Text Receipt
     public static void generateReceipt(Sale sale) {

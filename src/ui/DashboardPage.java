@@ -16,8 +16,10 @@ public class DashboardPage extends JFrame implements ActionListener{
     private JButton analytics_button;
     private JButton sales_button;
     private JButton history_button;
-    private JButton search_info_button; // button for stock search page
-    private JButton edit_info_button; // button for stock edit page
+    private JButton search_stock_button; // button for stock search page
+    private JButton edit_stock_button; // button for stock edit page
+    private JButton search_sales_button; // button for sales search page
+    private JButton edit_sales_button; // button for sales edit page
     
     DashboardPage(){
         // ... (Your existing window setup code) ...
@@ -45,7 +47,7 @@ public class DashboardPage extends JFrame implements ActionListener{
         int y_position = 70;
         int gap_between_buttons = 50;
 
-        if (Session.current_user.get_role().equalsIgnoreCase("manager")) {
+        if (Session.current_user.get_role().equalsIgnoreCase("manager")) { // only show register button if the current user has manager role
             register_button = new JButton("Register New Employee");
             register_button.setBounds(20, y_position, 200, 30); // Moved down to y=120 to make space
             register_button.addActionListener(this);
@@ -62,7 +64,7 @@ public class DashboardPage extends JFrame implements ActionListener{
         y_position += gap_between_buttons;
 
         sales_button = new JButton("Record New Sale");
-        sales_button.setBounds(20, 120, 200, 30);
+        sales_button.setBounds(20, y_position, 200, 30);
         sales_button.addActionListener(this);
         add(sales_button);
 
@@ -85,18 +87,28 @@ public class DashboardPage extends JFrame implements ActionListener{
         // ========================================
 
         // ===== SEARCH INFO BUTTON =====
-        search_info_button = new JButton("Search Stock");
-        search_info_button.setBounds(20, y_position, 200, 30);
-        search_info_button.addActionListener(this);
-        add(search_info_button);
+        search_stock_button = new JButton("Search Stock");
+        search_stock_button.setBounds(20, y_position, 200, 30);
+        search_stock_button.addActionListener(this);
+        add(search_stock_button);
+
+        search_sales_button = new JButton("Search Sales");;
+        search_sales_button.setBounds(240, y_position, 200, 30);
+        search_sales_button.addActionListener(this);
+        add(search_sales_button);
 
         y_position += gap_between_buttons;
 
         // ===== EDIT INFO BUTTON =====
-        edit_info_button = new JButton("Edit Stock");
-        edit_info_button.setBounds(20, y_position, 200, 30);
-        edit_info_button.addActionListener(this);
-        add(edit_info_button);
+        edit_stock_button = new JButton("Edit Stock");
+        edit_stock_button.setBounds(20, y_position, 200, 30);
+        edit_stock_button.addActionListener(this);
+        add(edit_stock_button);
+
+        edit_sales_button = new JButton("Edit Sales");
+        edit_sales_button.setBounds(240, y_position, 200, 30);
+        edit_sales_button.addActionListener(this);
+        add(edit_sales_button);
 
         y_position += gap_between_buttons;
 
@@ -169,11 +181,17 @@ public class DashboardPage extends JFrame implements ActionListener{
          else if (e.getSource() == history_button) {
             new SalesHistoryPage();
         }
-        else if (e.getSource() == search_info_button) {
+        else if (e.getSource() == search_stock_button) {
             new StockSearchPage();
         }
-        else if (e.getSource() == edit_info_button) {
+        else if (e.getSource() == edit_stock_button) {
             new StockEditPage();
+        }
+        else if (e.getSource() == search_sales_button) {
+            new SalesSearchPage();
+        }
+        else if (e.getSource() == edit_sales_button) {
+            new SalesEditPage();
         }
     }
 }

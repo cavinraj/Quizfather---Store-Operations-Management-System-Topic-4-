@@ -1,4 +1,7 @@
 package src.model;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -21,7 +24,7 @@ public class Sale {
 
     public void addItem(SaleItem item) {
         items.add(item);
-        totalAmount += item.getSubtotal();
+        totalAmount += item.getSubtotal(); // declared in SaleItem (unit price * quantity)
     }
 
     // Getters
@@ -33,4 +36,6 @@ public class Sale {
     public ArrayList<SaleItem> getItems() { return items; }
     
     public void setTotalAmount(double amount) { this.totalAmount = amount; } // For loading from CSV
+    public void setCustomerName(String customerName) {this.customerName = customerName;}
+    public void setPaymentMethod(String paymentMethod) {this.paymentMethod = paymentMethod;}
 }

@@ -15,6 +15,9 @@ public class SaleItem {
     public int getQuantity() { return quantity; }
     public double getUnitPrice() { return unitPrice; }
     public double getSubtotal() { return unitPrice * quantity; }
+
+    public void setModelName(String modelName) {this.modelName = modelName;}
+    public void setQuantity(int quantity) {this.quantity = quantity;}
     
     @Override
     public String toString() {
