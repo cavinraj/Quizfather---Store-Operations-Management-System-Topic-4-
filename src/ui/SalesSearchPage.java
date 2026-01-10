@@ -13,10 +13,9 @@ public class SalesSearchPage extends JFrame {
     private JButton searchButton, backButton;
 
     public SalesSearchPage() {
-        setTitle("Search Sales"); // shorter title
+        setTitle("Search Sales");
         setSize(600, 600);
         
-        // Simplified layout - students often put everything in one place
         setLayout(new BorderLayout());
 
         JPanel top = new JPanel(); 
@@ -27,13 +26,12 @@ public class SalesSearchPage extends JFrame {
         inputField = new JTextField(20);
         top.add(inputField);
         
-        searchButton = new JButton("Go"); // changed from "Search"
+        searchButton = new JButton("Go");
         top.add(searchButton);
         add(top, BorderLayout.NORTH);
 
         display = new JTextArea();
         display.setEditable(false);
-        // removed the Monospaced font - most students stick to default
         add(new JScrollPane(display), BorderLayout.CENTER);
 
         // standard action listeners
@@ -47,13 +45,13 @@ public class SalesSearchPage extends JFrame {
     private void startSearch() {
         String query = inputField.getText().trim().toLowerCase();
         
-        if (query.equals("")) { // students often use .equals("") instead of .isEmpty()
+        if (query.equals("")) {
             JOptionPane.showMessageDialog(this, "Type something first!");
             return;
         }
 
         ArrayList<Sale> list = SalesDataHandler.loadSales();
-        display.setText(""); // clear the area
+        display.setText("");
         
         boolean foundAtLeastOne = false;
 
@@ -78,7 +76,7 @@ public class SalesSearchPage extends JFrame {
                 // Manual string building instead of formatted strings
                 display.append("Date: " + s.getDateTime().toLocalDate() + "\n");
                 display.append("Customer: " + s.getCustomerName() + "\n");
-                display.append("Total: RM " + s.getTotalAmount() + "\n"); // removed the %.2f formatting
+                display.append("Total: RM " + s.getTotalAmount() + "\n");
                 display.append("Method: " + s.getPaymentMethod() + "\n");
                 
                 String itemsStr = "";

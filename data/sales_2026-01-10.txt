@@ -1,0 +1,13 @@
+=== SALES RECEIPT ===
+Date: 2026-01-10
+Time: 12:21 PM
+Customer: raya
+Employee: C6001
+---------------------------------
+Model           Qty   Price     
+SW2400-1        1     RM789.00
+---------------------------------
+Total: RM789.00
+Payment: Cash
+=================================
+

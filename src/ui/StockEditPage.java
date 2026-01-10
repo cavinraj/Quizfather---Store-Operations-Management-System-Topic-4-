@@ -100,19 +100,35 @@ public class StockEditPage extends JFrame implements ActionListener {
     }
 
     private void handleUpdate() {
-        try {
-            int newVal = Integer.parseInt(newStockField.getText().trim());
-            if (newVal < 0) throw new NumberFormatException();
-
-            // Apply modification to the object in memory
-            String outletCode = Session.current_user.get_employee_id().substring(0, 3);
-            foundModel.setStockForOutlet(outletCode, newVal);
-
-            JOptionPane.showMessageDialog(this, "Stock information updated successfully.");
-            this.dispose(); // Close window after update
-        } catch (NumberFormatException ex) {
-            // Handle invalid inputs as a prerequisite 
-            JOptionPane.showMessageDialog(this, "Please enter a valid positive number.");
+    try {
+        int newVal = Integer.parseInt(newStockField.getText().trim());
+        if (newVal < 0) {
+            throw new NumberFormatException();
         }
+
+        String outletCode = Session.current_user.get_employee_id().substring(0, 3);
+
+        ArrayList<Model> allModels = StockDataHandler.loadModels();
+
+        boolean found = false;
+        for (Model m : allModels) {
+            if (m.getModelName().equalsIgnoreCase(foundModel.getModelName())) {
+                m.setStockForOutlet(outletCode, newVal);
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            StockDataHandler.saveModels(allModels); 
+            JOptionPane.showMessageDialog(this, "Stock updated successfully in model.csv!");
+            this.dispose(); // Close window and return to dashboard
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: Model not found in the master list.");
+        }
+
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Error: Please enter a valid positive number.");
     }
+}
 }
