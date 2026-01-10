@@ -2,12 +2,14 @@ package src.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import src.model.Sale;
 import src.model.SaleItem;
 import src.utils.SalesDataHandler;
 
-public class SalesSearchPage extends JFrame {
+public class SalesSearchPage extends JFrame implements ActionListener {
     private JTextField inputField;
     private JTextArea display;
     private JButton searchButton, backButton;
@@ -22,7 +24,7 @@ public class SalesSearchPage extends JFrame {
         backButton = new JButton("Back");
         top.add(backButton);
         
-        top.add(new JLabel("Search:"));
+        top.add(new JLabel("Search (Customer Name, Date, or Item):"));
         inputField = new JTextField(20);
         top.add(inputField);
         
@@ -34,19 +36,29 @@ public class SalesSearchPage extends JFrame {
         display.setEditable(false);
         add(new JScrollPane(display), BorderLayout.CENTER);
 
-        // standard action listeners
-        searchButton.addActionListener(e -> startSearch());
-        backButton.addActionListener(e -> dispose());
+        searchButton.addActionListener(this);
+        backButton.addActionListener(this);
 
         setLocationRelativeTo(null);
         setVisible(true);
+        }
+
+    // standard action listeners
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == searchButton) {
+            startSearch();
+        } 
+        else if (e.getSource() == backButton) {
+            this.dispose();
+        }
     }
 
     private void startSearch() {
         String query = inputField.getText().trim().toLowerCase();
         
         if (query.equals("")) {
-            JOptionPane.showMessageDialog(this, "Type something first!");
+            JOptionPane.showMessageDialog(this, "Enter a keyword to search.");
             return;
         }
 
@@ -73,7 +85,6 @@ public class SalesSearchPage extends JFrame {
                 
                 foundAtLeastOne = true;
                 
-                // Manual string building instead of formatted strings
                 display.append("Date: " + s.getDateTime().toLocalDate() + "\n");
                 display.append("Customer: " + s.getCustomerName() + "\n");
                 display.append("Total: RM " + s.getTotalAmount() + "\n");
@@ -81,7 +92,7 @@ public class SalesSearchPage extends JFrame {
                 
                 String itemsStr = "";
                 for(SaleItem si : s.getItems()) {
-                    itemsStr += si.getModelName() + ", ";
+                    itemsStr += si.getModelName() + " (x" + si.getQuantity() + "), ";
                 }
                 display.append("Items: " + itemsStr + "\n");
                 display.append("----------------------------------\n");

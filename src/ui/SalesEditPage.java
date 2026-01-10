@@ -39,7 +39,7 @@ public class SalesEditPage extends JFrame {
         JPanel searchPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         searchPanel.setBorder(BorderFactory.createTitledBorder("Search Transaction History"));
         
-        searchPanel.add(new JLabel(" Enter Transaction Date (yyyy-MM-dd):"));
+        searchPanel.add(new JLabel(" Enter Transaction Date (yyyy-mm-dd):"));
         dateSearchField = new JTextField();
         searchPanel.add(dateSearchField);
         
