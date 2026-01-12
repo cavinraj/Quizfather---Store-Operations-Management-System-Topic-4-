@@ -1,11 +1,9 @@
 package src.ui;
 
 import javax.swing.*;
-
 import src.model.Model;
 import src.model.Outlet;
 import src.utils.StockDataHandler;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -37,13 +35,12 @@ public class StockSearchPage extends JFrame implements ActionListener {
         searchButton = new JButton("Search");
         searchButton.addActionListener(this);
         topPanel.add(searchButton);
-
         add(topPanel, BorderLayout.NORTH);
 
         // panel for results
         resultArea = new JTextArea();
         resultArea.setEditable(false);
-        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        resultArea.setFont(new Font("Arial", Font.PLAIN, 12));
         add(new JScrollPane(resultArea), BorderLayout.CENTER);
 
         setLocationRelativeTo(null);
@@ -51,13 +48,11 @@ public class StockSearchPage extends JFrame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // search logic
-        if (e.getSource() == searchButton) {
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == searchButton) {
             performSearch();
         } 
-        // back button logic
-        else if (e.getSource() == backButton) {
+        else if (event.getSource() == backButton) {
             this.dispose();
         }
     }

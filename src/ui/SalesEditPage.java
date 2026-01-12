@@ -2,6 +2,8 @@ package src.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import src.model.Sale;
 import src.model.SaleItem;
@@ -10,79 +12,74 @@ import src.utils.SalesDataHandler;
 import src.utils.StockDataHandler;
 import src.utils.Session;
 
-public class SalesEditPage extends JFrame {
+public class SalesEditPage extends JFrame implements ActionListener{
     private JTextField dateSearchField, customerSearchField, editNameField, editTotalField;
     private JComboBox<String> editMethodBox;
     private DefaultListModel<String> itemsListModel;
     private JList<String> itemsList;
     private JButton searchButton, updateButton, editButton;
-    private Sale foundSale = null;
+    private Sale foundSale = null; 
     private String currentOutletId;
 
     public SalesEditPage() {
-        setTitle("Edit Sales & Inventory Synchronization");
+        setTitle("Sales Record Manager");
         setSize(650, 700);
         setLayout(new BorderLayout(10, 10));
 
-        if (Session.current_user != null) { // this method will get the current user's outlet code
+        if (Session.current_user != null) {
             String empId = Session.current_user.get_employee_id();
-                if (empId.length() >= 3) {
-                    currentOutletId = empId.substring(0, 3);
-                } else {
-                    currentOutletId = "C60";
-                }
+            if (empId.length() >= 3) {
+                currentOutletId = empId.substring(0, 3);
+            } else {
+                currentOutletId = "C60";
+            }
         } else {
             currentOutletId = "C60";
         }
 
-        // search sales records by date or customer name
         JPanel searchPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Search Transaction History"));
-        
-        searchPanel.add(new JLabel(" Enter Transaction Date (yyyy-mm-dd):"));
+        searchPanel.setBorder(BorderFactory.createTitledBorder("Search Criteria"));
+        searchPanel.add(new JLabel("Date (yyyy-MM-dd):"));
         dateSearchField = new JTextField();
         searchPanel.add(dateSearchField);
         
-        searchPanel.add(new JLabel("Enter Customer Name:"));
+        searchPanel.add(new JLabel("Customer Name:"));
         customerSearchField = new JTextField();
         searchPanel.add(customerSearchField);
         
-        searchButton = new JButton("Search Sales Record");
-        searchButton.addActionListener(e -> performSearch());
+        searchButton = new JButton("Perform Search");
+        searchButton.addActionListener(this);
         searchPanel.add(searchButton);
         add(searchPanel, BorderLayout.NORTH);
 
-        // section to display and edit items in the sale
         JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.setBorder(BorderFactory.createTitledBorder("Items in Transaction (Select to Edit)"));
         itemsListModel = new DefaultListModel<>();
         itemsList = new JList<>(itemsListModel);
         centerPanel.add(new JScrollPane(itemsList), BorderLayout.CENTER);
 
-        editButton = new JButton("Edit Selected Item (Model/Qty)");
+        editButton = new JButton("Edit Highlighted Item");
         editButton.setEnabled(false);
-        editButton.addActionListener(e -> editSelectedItem());
+        editButton.addActionListener(this);
         centerPanel.add(editButton, BorderLayout.SOUTH);
         add(centerPanel, BorderLayout.CENTER);
 
-        // editable part for customer name, total amount, payment method
         JPanel bottomPanel = new JPanel(new GridLayout(4, 2, 5, 5));
-        bottomPanel.add(new JLabel(" 1. Customer Name:"));
+        bottomPanel.add(new JLabel("Update Name:"));
         editNameField = new JTextField();
         bottomPanel.add(editNameField);
 
-        bottomPanel.add(new JLabel(" 4. Total Amount (RM):"));
+        bottomPanel.add(new JLabel("Update Amount:"));
         editTotalField = new JTextField();
         bottomPanel.add(editTotalField);
 
-        bottomPanel.add(new JLabel(" 5. Transaction Method:"));
+        bottomPanel.add(new JLabel("Payment Method:"));
         String[] methods = {"Cash", "Credit card", "E-wallet", "Debit card"};
         editMethodBox = new JComboBox<>(methods);
         bottomPanel.add(editMethodBox);
 
-        updateButton = new JButton("Confirm All Changes & Sync CSV");
+        updateButton = new JButton("Confirm & Save Changes");
         updateButton.setEnabled(false);
-        updateButton.addActionListener(e -> performUpdate());
+        updateButton.addActionListener(this);
         bottomPanel.add(new JLabel("")); 
         bottomPanel.add(updateButton);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -91,138 +88,126 @@ public class SalesEditPage extends JFrame {
         setVisible(true);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == searchButton) {
+            performSearch();
+        } 
+        else if (event.getSource() == editButton) {
+            editSelectedItem();
+        } 
+        else if (event.getSource() == updateButton) {
+            performUpdate();
+        }
+    }
+
     private void performSearch() {
         ArrayList<Sale> salesList = SalesDataHandler.loadSales();
-        String date = dateSearchField.getText().trim();
-        String customer = customerSearchField.getText().trim();
+        String searchDate = dateSearchField.getText().trim();
+        String searchName = customerSearchField.getText().trim();
 
-        for (Sale s : salesList) {
-            if (s.getDateTime().toLocalDate().toString().equals(date) && 
-                s.getCustomerName().equalsIgnoreCase(customer)) {
-                
+        // Sequential/Linear Search
+        for (int i = 0; i < salesList.size(); i++) {
+            Sale s = salesList.get(i);
+            String saleDate = s.getDateTime().toLocalDate().toString();
+            
+            if (saleDate.equals(searchDate) && s.getCustomerName().equalsIgnoreCase(searchName)) {
                 foundSale = s;
                 refreshFields();
                 updateButton.setEnabled(true);
                 editButton.setEnabled(true);
-                JOptionPane.showMessageDialog(this, "Sales Record Found!");
+                JOptionPane.showMessageDialog(this, "Success: Record found!");
                 return;
             }
         }
-        JOptionPane.showMessageDialog(this, "Sales Record Not Found.");
+        JOptionPane.showMessageDialog(this, "Error: No matching record.");
     }
 
     private void refreshFields() {
         editNameField.setText(foundSale.getCustomerName());
-        editTotalField.setText(String.format("%.2f", foundSale.getTotalAmount()));
+        editTotalField.setText(String.valueOf(foundSale.getTotalAmount()));
         editMethodBox.setSelectedItem(foundSale.getPaymentMethod());
         
         itemsListModel.clear();
-        for (SaleItem item : foundSale.getItems()) {
-            itemsListModel.addElement(item.getModelName() + " | Qty: " + item.getQuantity());
+        ArrayList<SaleItem> items = foundSale.getItems();
+        for (int i = 0; i < items.size(); i++) {
+            SaleItem item = items.get(i);
+            itemsListModel.addElement(item.getModelName() + " | Quantity: " + item.getQuantity());
         }
     }
 
     private void editSelectedItem() {
         int index = itemsList.getSelectedIndex();
-        if (index == -1) {
-            return;
-        }
+        if (index == -1) return;
 
-        SaleItem selectedItem = foundSale.getItems().get(index);
-        String oldModel = selectedItem.getModelName();
-        int oldQuantity = selectedItem.getQuantity();
+        SaleItem item = foundSale.getItems().get(index);
+        String oldModel = item.getModelName();
+        int oldQty = item.getQuantity();
 
-        // get new model and verify whether it exists or not
-        String newModel = JOptionPane.showInputDialog(this, "Update Model Name:", oldModel);
+        String newModel = JOptionPane.showInputDialog(this, "Enter New Model Name:", oldModel);
         if (newModel == null || !doesModelExist(newModel)) {
-            JOptionPane.showMessageDialog(this, "Model does not exist in stock records.");
+            JOptionPane.showMessageDialog(this, "Model does not exist.");
             return;
         }
 
-        // get new quantity and verify whether it's in stock or not
-        String newQuantity = JOptionPane.showInputDialog(this, "Update Quantity:", oldQuantity);
-        if (newQuantity == null) return;
-
+        String newQtyStr = JOptionPane.showInputDialog(this, "Enter New Quantity:", oldQty);
+        
         try {
-            int newQty = Integer.parseInt(newQuantity);
-            if (newQty < 0) throw new NumberFormatException();
-
-            // make sure stock is sufficient after considering reversal of old qty
+            int newQty = Integer.parseInt(newQtyStr);
             ArrayList<Model> inventory = StockDataHandler.loadModels();
-            Model targetModel = null;
-            for (Model m : inventory) {
-                if (m.getModelName().equalsIgnoreCase(newModel)) {
-                    targetModel = m;
-                    break;
-                }
-            }
 
-            if (targetModel != null) {
-                int currentInCSV = targetModel.getStockForOutlet(currentOutletId);
-                int availableAfterReversal = newModel.equalsIgnoreCase(oldModel) ? currentInCSV + oldQuantity : currentInCSV;
-
-                if (availableAfterReversal - newQty < 0) {
-                    JOptionPane.showMessageDialog(this, "Insufficient stock! Resulting stock would be " + (availableAfterReversal - newQty));
-                    return;
-                }
-            }
-
-            for (Model m : inventory) {
+            for (int i = 0; i < inventory.size(); i++) {
+                Model m = inventory.get(i);
                 if (m.getModelName().equalsIgnoreCase(oldModel)) {
-                    m.setStockForOutlet(currentOutletId, m.getStockForOutlet(currentOutletId) + oldQuantity);
+                    int currentStock = m.getStockForOutlet(currentOutletId);
+                    m.setStockForOutlet(currentOutletId, currentStock + oldQty);
                 }
                 if (m.getModelName().equalsIgnoreCase(newModel)) {
-                    m.setStockForOutlet(currentOutletId, m.getStockForOutlet(currentOutletId) - newQty);
+                    int currentStock = m.getStockForOutlet(currentOutletId);
+                    m.setStockForOutlet(currentOutletId, currentStock - newQty);
                 }
             }
-            StockDataHandler.saveModels(inventory); // modify data adjustment 
-
-            // update selected item in sale
-            selectedItem.setModelName(newModel);
-            selectedItem.setQuantity(newQty);
-            refreshFields();
             
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid quantity! Use positive numbers only.");
+            StockDataHandler.saveModels(inventory);
+            item.setModelName(newModel);
+            item.setQuantity(newQty);
+            refreshFields();
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(this, "Invalid number entered!");
         }
     }
 
-    private boolean doesModelExist(String modelName) {
-        // search if model exists in stock records
-        ArrayList<Model> validModels = StockDataHandler.loadModels();
-        for (Model m : validModels) {
-            if (m.getModelName().equalsIgnoreCase(modelName.trim())) return true;
+    private boolean doesModelExist(String name) {
+        ArrayList<Model> models = StockDataHandler.loadModels();
+        for (int i = 0; i < models.size(); i++) {
+            if (models.get(i).getModelName().equalsIgnoreCase(name)) {
+                return true;
+            }
         }
         return false;
     }
 
     private void performUpdate() {
-        if (foundSale == null) return;
+        try {
+            double price = Double.parseDouble(editTotalField.getText());
+            foundSale.setCustomerName(editNameField.getText().trim());
+            foundSale.setTotalAmount(price);
+            foundSale.setPaymentMethod((String) editMethodBox.getSelectedItem());
 
-        // confirm before updating
-        int confirm = JOptionPane.showConfirmDialog(this, "Confirm Update? (Y/N)", "Confirmation", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                foundSale.setCustomerName(editNameField.getText().trim());
-                foundSale.setTotalAmount(Double.parseDouble(editTotalField.getText().trim()));
-                foundSale.setPaymentMethod((String) editMethodBox.getSelectedItem());
-
-                // modify sales record in CSV 
-                ArrayList<Sale> allSales = SalesDataHandler.loadSales();
-                for (int i = 0; i < allSales.size(); i++) {
-                    if (allSales.get(i).getDateTime().equals(foundSale.getDateTime()) && 
-                        allSales.get(i).getCustomerName().equalsIgnoreCase(customerSearchField.getText().trim())) {
-                        allSales.set(i, foundSale);
-                        break;
-                    }
+            ArrayList<Sale> allSales = SalesDataHandler.loadSales();
+            for (int i = 0; i < allSales.size(); i++) {
+                Sale s = allSales.get(i);
+                if (s.getDateTime().equals(foundSale.getDateTime()) && s.getCustomerName().equalsIgnoreCase(customerSearchField.getText().trim())) {
+                    allSales.set(i, foundSale);
+                    break;
                 }
-
-                SalesDataHandler.saveAllSales(allSales); 
-                JOptionPane.showMessageDialog(this, "Records successfully updated.");
-                this.dispose();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error during update: " + ex.getMessage());
             }
+
+            SalesDataHandler.saveAllSales(allSales);
+            JOptionPane.showMessageDialog(this, "File Updated Successfully!");
+            this.dispose();  
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Format Error: Please check your inputs.");
         }
     }
 }

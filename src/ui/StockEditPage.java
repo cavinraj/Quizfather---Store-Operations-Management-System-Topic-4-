@@ -11,20 +11,19 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class StockEditPage extends JFrame implements ActionListener {
-    // UI components for interaction and display
     private JTextField modelSearchField, newStockField;
-    private JButton loadButton, updateButton, backButton; // Added backButton
+    private JButton loadButton, updateButton, backButton;
     private JLabel currentStockLabel, modelNameLabel;
     private Model foundModel = null; // Stores the model object currently being edited
 
     public StockEditPage() {
-        setTitle("Edit Stock Information"); 
+        setTitle("Edit stock information"); 
         setSize(400, 350);
         setLayout(new GridLayout(7, 1, 10, 10));
 
         // model search panel
         JPanel searchPanel = new JPanel(new FlowLayout());
-        searchPanel.add(new JLabel("Model Name:"));
+        searchPanel.add(new JLabel("Model name:"));
         modelSearchField = new JTextField(10);
         searchPanel.add(modelSearchField);
         loadButton = new JButton("Load");
@@ -34,26 +33,26 @@ public class StockEditPage extends JFrame implements ActionListener {
 
         // display model name and current stock
         modelNameLabel = new JLabel("Model: -", SwingConstants.CENTER);
-        currentStockLabel = new JLabel("Current Stock: -", SwingConstants.CENTER);
+        currentStockLabel = new JLabel("Current stock: -", SwingConstants.CENTER);
         add(modelNameLabel);
         add(currentStockLabel);
 
         // input new stock
         JPanel updatePanel = new JPanel(new FlowLayout());
-        updatePanel.add(new JLabel("New Stock:"));
+        updatePanel.add(new JLabel("New stock:"));
         newStockField = new JTextField(5);
         newStockField.setEnabled(false); // Disabled until a model is found
         updatePanel.add(newStockField);
         add(updatePanel);
 
         // update stock button
-        updateButton = new JButton("Update Stock Value");
+        updateButton = new JButton("Update stock value");
         updateButton.setEnabled(false);
         updateButton.addActionListener(this);
         add(updateButton);
 
         // back button
-        backButton = new JButton("Back to Dashboard");
+        backButton = new JButton("Back to dashboard");
         backButton.addActionListener(this);
         add(backButton);
 
@@ -121,14 +120,14 @@ public class StockEditPage extends JFrame implements ActionListener {
 
         if (found) {
             StockDataHandler.saveModels(allModels); 
-            JOptionPane.showMessageDialog(this, "Stock updated successfully in model.csv!");
+            JOptionPane.showMessageDialog(this, "Stock updated successfully");
             this.dispose(); // Close window and return to dashboard
         } else {
-            JOptionPane.showMessageDialog(this, "Error: Model not found in the master list.");
+            JOptionPane.showMessageDialog(this, "Model not found");
         }
 
     } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Error: Please enter a valid positive number.");
+        JOptionPane.showMessageDialog(this, "Enter a positive number");
     }
 }
 }

@@ -16,7 +16,7 @@ public class SalesSearchPage extends JFrame implements ActionListener {
 
     public SalesSearchPage() {
         setTitle("Search Sales");
-        setSize(600, 600);
+        setSize(800, 600);
         
         setLayout(new BorderLayout());
 
@@ -43,7 +43,6 @@ public class SalesSearchPage extends JFrame implements ActionListener {
         setVisible(true);
         }
 
-    // standard action listeners
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == searchButton) {
@@ -57,7 +56,7 @@ public class SalesSearchPage extends JFrame implements ActionListener {
     private void startSearch() {
         String query = inputField.getText().trim().toLowerCase();
         
-        if (query.equals("")) {
+        if (query.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Enter a keyword to search.");
             return;
         }
